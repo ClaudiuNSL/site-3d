@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banciu Costin - Fotograf Profesionist</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Fixed Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <!-- Premium 3D Logo -->
+            <div class="nav-logo">
+                <div class="logo-3d">
+                    <div class="logo-face logo-front">
+                        <span>BC</span>
+                        <i class="fas fa-camera logo-icon"></i>
+                    </div>
+                    <div class="logo-face logo-back">
+                        <span>BC</span>
+                    </div>
+                    <div class="logo-face logo-right"></div>
+                    <div class="logo-face logo-left"></div>
+                    <div class="logo-face logo-top"></div>
+                    <div class="logo-face logo-bottom"></div>
+                </div>
+                <div class="logo-text">
+                    <h2>Banciu Costin</h2>
+                    <p>PHOTOGRAPHY</p>
+                </div>
+            </div>
+
+            <!-- Navigation Menu -->
+            <ul class="nav-menu" id="nav-menu">
+                <li><a href="#home" class="nav-link">Acasă</a></li>
+                <li><a href="#servicii" class="nav-link">Servicii</a></li>
+                <li><a href="#portofoliu" class="nav-link">Portofoliu</a></li>
+                <li><a href="#despre" class="nav-link">Despre</a></li>
+                <li><a href="#contact" class="nav-link">Contact</a></li>
+            </ul>
+
+            <!-- Social Icons -->
+            <div class="social-icons">
+                <a href="https://www.facebook.com/CostinBanciuPhotography" target="_blank" class="social-link">
+                    <i class="fab fa-facebook-f"></i>
+                </a>
+                <a href="#" class="social-link">
+                    <i class="fab fa-instagram"></i>
+                </a>
+            </div>
+
+            <!-- Mobile Menu Toggle -->
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1>Banciu Costin</h1>
+                <p class="subtitle">F O T O G R A F I E</p>
+                <p class="hero-description">Surprind momente, creez amintiri</p>
+                <button class="cta-button" onclick="scrollToSection('servicii')">
+                    <span>Descoperă serviciile</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+        <div class="hero-image">
+            <img src="https://scontent.fcnd1-1.fna.fbcdn.net/v/t39.30808-6/494533847_2375275606179881_3622543476139373312_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=a5f93a&_nc_ohc=66r3sbHGXB0Q7kNvwEUewTR&_nc_oc=Adk3NU2mNmvmVO7FH8AoyD5YFhfzLaVK4owoPKWV7xAb49lZIPUR5QMXf6q0O_BMh5z_474sXGB7RX5rscWdzPv5&_nc_zt=23&_nc_ht=scontent.fcnd1-1.fna&_nc_gid=A-xMQexLWjN1b-jtU4569g&oh=00_AfIIaXYkdR-NMK2EkQRaSqdgCKFZdcxMT026KX0ipcTIxw&oe=6844E6BC" alt="Banciu Costin Photography">
+        </div>
+        <div class="hero-overlay"></div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="servicii" class="services">
+        <div class="services-background">
+            <div class="bg-element bg-element-1"></div>
+            <div class="bg-element bg-element-2"></div>
+            <div class="bg-element bg-element-3"></div>
+            <div class="bg-pattern"></div>
+        </div>
+        
+        <div class="container">
+            <h2 class="section-title">Serviciile Mele</h2>
+            <p class="section-subtitle">Fiecare moment are povestea lui. Lasă-mă să o surprind pentru tine.</p>
+            
+            <div class="service-grid">
+                <!-- Wedding -->
+                <div class="service-card" data-service="nunta">
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <div class="service-icon">💍</div>
+                            <h3>Nuntă</h3>
+                            <h4>O zi, o viață de amintiri</h4>
+                            <p>Într-o zi, două suflete spun „da" pentru totdeauna. Nunta nu este doar un eveniment – este începutul unei povești...</p>
+                            <div class="card-hint">
+                                <i class="fas fa-camera"></i>
+                                <span>Hover pentru preview</span>
+                            </div>
+                        </div>
+                        <div class="card-back">
+                            <img src="/placeholder.svg?height=400&width=600&text=Wedding+Photography" alt="Wedding Photography">
+                            <div class="card-overlay">
+                                <h3>Nuntă</h3>
+                                <p>O zi, o viață de amintiri</p>
+                                <button class="view-gallery-btn">
+                                    <i class="fas fa-camera"></i>
+                                    <span>Vezi galeria →</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Baptism -->
+                <div class="service-card" data-service="botez">
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <div class="service-icon">👶</div>
+                            <h3>Botez</h3>
+                            <h4>Magia începuturilor</h4>
+                            <p>Sunt zile care trec și zile care rămân în suflet pentru totdeauna. Prima băiță în cristelniță...</p>
+                            <div class="card-hint">
+                                <i class="fas fa-camera"></i>
+                                <span>Hover pentru preview</span>
+                            </div>
+                        </div>
+                        <div class="card-back">
+                            <img src="/placeholder.svg?height=400&width=600&text=Baptism+Photography" alt="Baptism Photography">
+                            <div class="card-overlay">
+                                <h3>Botez</h3>
+                                <p>Magia începuturilor</p>
+                                <button class="view-gallery-btn">
+                                    <i class="fas fa-camera"></i>
+                                    <span>Vezi galeria →</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Couple -->
+                <div class="service-card" data-service="cuplu">
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <div class="service-icon">💕</div>
+                            <h3>Întâlnire romantică / Cuplu</h3>
+                            <h4>Povestea voastră, în imagini</h4>
+                            <p>Nu e nevoie de un motiv mare pentru a fotografia iubirea. Uneori, o plimbare de seară prin oraș...</p>
+                            <div class="card-hint">
+                                <i class="fas fa-camera"></i>
+                                <span>Hover pentru preview</span>
+                            </div>
+                        </div>
+                        <div class="card-back">
+                            <img src="/placeholder.svg?height=400&width=600&text=Couple+Photography" alt="Couple Photography">
+                            <div class="card-overlay">
+                                <h3>Cuplu</h3>
+                                <p>Povestea voastră, în imagini</p>
+                                <button class="view-gallery-btn">
+                                    <i class="fas fa-camera"></i>
+                                    <span>Vezi galeria →</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Family -->
+                <div class="service-card" data-service="familie">
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <div class="service-icon">👨‍👩‍👧‍👦</div>
+                            <h3>Fotografie de familie</h3>
+                            <h4>Împreună e cel mai frumos</h4>
+                            <p>Într-o lume agitată, ședințele foto de familie ne reamintesc ce e cu adevărat important...</p>
+                            <div class="card-hint">
+                                <i class="fas fa-camera"></i>
+                                <span>Hover pentru preview</span>
+                            </div>
+                        </div>
+                        <div class="card-back">
+                            <img src="/placeholder.svg?height=400&width=600&text=Family+Photography" alt="Family Photography">
+                            <div class="card-overlay">
+                                <h3>Familie</h3>
+                                <p>Împreună e cel mai frumos</p>
+                                <button class="view-gallery-btn">
+                                    <i class="fas fa-camera"></i>
+                                    <span>Vezi galeria →</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Fun Photos -->
+                <div class="service-card" data-service="amuzante">
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <div class="service-icon">😄</div>
+                            <h3>Fotografii amuzante</h3>
+                            <h4>Când râsul devine artă</h4>
+                            <p>Uneori, cel mai frumos cadru nu e cel perfect – ci cel spontan. Îți propunem o experiență diferită...</p>
+                            <div class="card-hint">
+                                <i class="fas fa-camera"></i>
+                                <span>Hover pentru preview</span>
+                            </div>
+                        </div>
+                        <div class="card-back">
+                            <img src="/placeholder.svg?height=400&width=600&text=Fun+Photography" alt="Fun Photography">
+                            <div class="card-overlay">
+                                <h3>Fotografii amuzante</h3>
+                                <p>Când râsul devine artă</p>
+                                <button class="view-gallery-btn">
+                                    <i class="fas fa-camera"></i>
+                                    <span>Vezi galeria →</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Save the Date -->
+                <div class="service-card" data-service="save-date">
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <div class="service-icon">📅</div>
+                            <h3>Save the Date</h3>
+                            <h4>Primul capitol din povestea voastră de nuntă</h4>
+                            <p>Totul începe cu o întrebare și un „da" spus din inimă. Urmează planuri, visuri, idei...</p>
+                            <div class="card-hint">
+                                <i class="fas fa-camera"></i>
+                                <span>Hover pentru preview</span>
+                            </div>
+                        </div>
+                        <div class="card-back">
+                            <img src="/placeholder.svg?height=400&width=600&text=Save+the+Date" alt="Save the Date">
+                            <div class="card-overlay">
+                                <h3>Save the Date</h3>
+                                <p>Primul capitol din povestea voastră</p>
+                                <button class="view-gallery-btn">
+                                    <i class="fas fa-camera"></i>
+                                    <span>Vezi galeria →</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Trash the Dress -->
+                <div class="service-card" data-service="trash-dress">
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <div class="service-icon">👗</div>
+                            <h3>Trash the Dress</h3>
+                            <h4>Nunta s-a terminat, distracția începe</h4>
+                            <p>Ai spus „da", ai dansat, ai plâns de emoție... și acum e timpul să fii creativă!</p>
+                            <div class="card-hint">
+                                <i class="fas fa-camera"></i>
+                                <span>Hover pentru preview</span>
+                            </div>
+                        </div>
+                        <div class="card-back">
+                            <img src="/placeholder.svg?height=400&width=600&text=Trash+the+Dress" alt="Trash the Dress">
+                            <div class="card-overlay">
+                                <h3>Trash the Dress</h3>
+                                <p>Distracția începe</p>
+                                <button class="view-gallery-btn">
+                                    <i class="fas fa-camera"></i>
+                                    <span>Vezi galeria →</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Graduation -->
+                <div class="service-card" data-service="absolvire">
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <div class="service-icon">🎓</div>
+                            <h3>Fotografii de absolvire</h3>
+                            <h4>Îmbrățișează-ți visul</h4>
+                            <p>După ani de muncă, sacrificii, examene și prietenii legate pe viață, vine momentul acela...</p>
+                            <div class="card-hint">
+                                <i class="fas fa-camera"></i>
+                                <span>Hover pentru preview</span>
+                            </div>
+                        </div>
+                        <div class="card-back">
+                            <img src="/placeholder.svg?height=400&width=600&text=Graduation+Photography" alt="Graduation Photography">
+                            <div class="card-overlay">
+                                <h3>Absolvire</h3>
+                                <p>Îmbrățișează-ți visul</p>
+                                <button class="view-gallery-btn">
+                                    <i class="fas fa-camera"></i>
+                                    <span>Vezi galeria →</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Professional -->
+                <div class="service-card" data-service="profesional">
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <div class="service-icon">👔</div>
+                            <h3>Fotografia ca reflexie</h3>
+                            <h4>Imaginea ta profesională contează</h4>
+                            <p>Trăim într-o lume vizuală, unde prima impresie se formează în câteva secunde...</p>
+                            <div class="card-hint">
+                                <i class="fas fa-camera"></i>
+                                <span>Hover pentru preview</span>
+                            </div>
+                        </div>
+                        <div class="card-back">
+                            <img src="/placeholder.svg?height=400&width=600&text=Professional+Photography" alt="Professional Photography">
+                            <div class="card-overlay">
+                                <h3>Profesional</h3>
+                                <p>Imaginea ta contează</p>
+                                <button class="view-gallery-btn">
+                                    <i class="fas fa-camera"></i>
+                                    <span>Vezi galeria →</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Modal -->
+    <div id="gallery-modal" class="gallery-modal">
+        <div class="gallery-content">
+            <div class="gallery-header">
+                <h2 id="gallery-title">Galerie</h2>
+                <button class="close-gallery" id="close-gallery">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="gallery-grid" id="gallery-grid">
+                <!-- Gallery images will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Image Lightbox -->
+    <div id="lightbox" class="lightbox">
+        <div class="lightbox-content">
+            <img id="lightbox-image" src="/placeholder.svg" alt="">
+            <button class="close-lightbox" id="close-lightbox">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <h2 class="section-title">Să creăm împreună amintiri</h2>
+            <p class="section-subtitle">Fiecare poveste merită să fie spusă frumos. Spune-mi povestea ta.</p>
+            
+            <div class="contact-content">
+                <div class="contact-info">
+                    <h3>Banciu Costin</h3>
+                    <p>Fotograf Profesionist</p>
+                    <div class="contact-details">
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-phone"></i>
+                            </div>
+                            <span>+40 753 110 407</span>
+                        </div>
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fab fa-whatsapp"></i>
+                            </div>
+                            <span>+40 753 110 407 (WhatsApp)</span>
+                        </div>
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <span>costinfoto@gmail.com</span>
+                        </div>
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <span>Constanta, Romania</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="contact-form">
+                    <form id="contact-form">
+                        <div class="form-row">
+                            <input type="text" name="name" placeholder="Numele tău" required>
+                            <input type="email" name="email" placeholder="Email" required>
+                        </div>
+                        <input type="tel" name="phone" placeholder="Telefon" required>
+                        <select name="service" required>
+                            <option value="">Selectează serviciul</option>
+                            <option value="nunta">Nuntă</option>
+                            <option value="botez">Botez</option>
+                            <option value="cuplu">Cuplu</option>
+                            <option value="familie">Familie</option>
+                            <option value="amuzante">Fotografii amuzante</option>
+                            <option value="save-date">Save the Date</option>
+                            <option value="trash-dress">Trash the Dress</option>
+                            <option value="absolvire">Absolvire</option>
+                            <option value="profesional">Profesional</option>
+                        </select>
+                        <textarea name="message" placeholder="Spune-mi despre evenimentul tău..." rows="5"></textarea>
+                        <button type="submit" class="submit-btn">
+                            <span>Trimite mesajul</span>
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Banciu Costin Photography. Toate drepturile rezervate.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
