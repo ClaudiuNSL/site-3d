@@ -222,9 +222,7 @@ const closeLightbox = document.getElementById('close-lightbox');
 // Handle service card clicks
 function handleServiceCardClick(e) {
     const card = e.currentTarget;
-    console.log({card});
     const serviceType = card.getAttribute('data-service');
-    console.log({serviceType})
     // Prevent opening gallery on hover, only on click
     if (e.target.closest('.view-gallery-btn') || card.classList.contains('flipped')) {
         openGallery(serviceType);
@@ -273,6 +271,8 @@ function closeGalleryModal() {
     document.body.style.overflow = 'auto';
 }
 
+closeGallery.addEventListener('click', closeGalleryModal);
+
 // Open lightbox
 function openLightbox(imageSrc) {
     lightboxImage.src = imageSrc;
@@ -284,6 +284,8 @@ function closeLightboxModal() {
     lightbox.style.display = 'none';
     lightboxImage.src = '';
 }
+
+lightbox.addEventListener('click', closeLightboxModal);
 
 // Close modals with Escape key
 function handleKeyDown(e) {

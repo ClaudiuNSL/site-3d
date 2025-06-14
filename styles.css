@@ -186,12 +186,13 @@ a {
     color: white;
     font-size: 1.1rem;
     transition: all 0.3s ease;
-    padding: 8px;
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.1);
     width: 40px;
     height: 40px;
-    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .social-link:hover {
@@ -603,10 +604,12 @@ a {
     border: none;
     font-size: 1.5rem;
     cursor: pointer;
-    padding: 10px;
     border-radius: 50%;
     transition: all 0.3s ease;
     color: #64748b;
+    width: 40px;
+    height: 40px;
+    text-align: center;
 }
 
 .close-gallery:hover {
@@ -709,10 +712,12 @@ a {
     border: none;
     color: white;
     font-size: 1.5rem;
-    padding: 15px;
     border-radius: 50%;
     cursor: pointer;
     transition: all 0.3s ease;
+    width: 40px;
+    height: 40px;
+    text-align: center;
 }
 
 .close-lightbox:hover {
