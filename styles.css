@@ -184,6 +184,9 @@ body {
     padding: 8px;
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.1);
+    width: 40px;
+    height: 40px;
+    text-align: center;
 }
 
 .social-link:hover {
@@ -900,8 +903,11 @@ body {
 
 /* Responsive Design */
 @media (max-width: 768px) {
-    .nav-menu,
     .social-icons {
+        margin-left: auto;
+        margin-right: 20px;
+    }
+    .nav-menu {
         display: none;
     }
     
