@@ -174,10 +174,21 @@ const galleryData = {
         '/placeholder.svg?height=800&width=1200&text=Fun+Photo+4'
     ],
     'save-date': [
-        '/placeholder.svg?height=800&width=1200&text=Save+Date+Photo+1',
-        '/placeholder.svg?height=800&width=1200&text=Save+Date+Photo+2',
-        '/placeholder.svg?height=800&width=1200&text=Save+Date+Photo+3',
-        '/placeholder.svg?height=800&width=1200&text=Save+Date+Photo+4'
+        'assets/images/saveTheDate/112A1791-Enhanced-NR.jpg',
+        'assets/images/saveTheDate/112A1836-Enhanced-NR.jpg',
+        'assets/images/saveTheDate/112A1877-Enhanced-NR.jpg',
+        'assets/images/saveTheDate/112A1895-Enhanced-NR.jpg',
+        'assets/images/saveTheDate/112A1916-Enhanced-NR.jpg',
+        'assets/images/saveTheDate/112A1931-Enhanced-NR.jpg',
+        'assets/images/saveTheDate/112A1973-Enhanced-NR.jpg',
+        'assets/images/saveTheDate/112A1977-Enhanced-NR.jpg',
+        'assets/images/saveTheDate/112A1986-Enhanced-NR.jpg',
+        'assets/images/saveTheDate/5J9A3445-Enhanced-NR.jpg',
+        'assets/images/saveTheDate/5J9A3459-Enhanced-NR.jpg',
+        'assets/images/saveTheDate/5J9A3464-Enhanced-NR.jpg',
+        'assets/images/saveTheDate/5J9A3468-Enhanced-NR.jpg',
+        'assets/images/saveTheDate/5J9A3470-Enhanced-NR.jpg',
+        'assets/images/saveTheDate/5J9A3499-Enhanced-NR-2.jpg'
     ],
     'trash-dress': [
         '/placeholder.svg?height=800&width=1200&text=Trash+Dress+Photo+1',
