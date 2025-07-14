@@ -133,25 +133,40 @@ document.querySelectorAll('.contact-item').forEach(item => {
     observer.observe(item);
 });
 
+// Observe gallery items
+document.querySelectorAll('.gallery-item').forEach(item => {
+    observer.observe(item);
+});
+
 // Gallery data for each service
 const galleryData = {
     nunta: [
-        '/placeholder.svg?height=800&width=1200&text=Wedding+Photo+1',
-        '/placeholder.svg?height=800&width=1200&text=Wedding+Photo+2',
-        '/placeholder.svg?height=800&width=1200&text=Wedding+Photo+3',
-        '/placeholder.svg?height=800&width=1200&text=Wedding+Photo+4',
-        '/placeholder.svg?height=800&width=1200&text=Wedding+Photo+5',
-        '/placeholder.svg?height=800&width=1200&text=Wedding+Photo+6',
-        '/placeholder.svg?height=800&width=1200&text=Wedding+Photo+7',
-        '/placeholder.svg?height=800&width=1200&text=Wedding+Photo+8'
+        '/assets/images/nunta/MihaiBianca/001-002.jpg',
+        '/assets/images/nunta/MihaiBianca/007-008.jpg',
+        '/assets/images/nunta/MihaiBianca/011-012.jpg',
+        'assets/images/nunta/MihaiBianca/013-014.jpg',
+        '/assets/images/nunta/MihaiBianca/019-020.jpg',
+        '/assets/images/nunta/MihaiBianca/021-022.jpg',
+        '/assets/images/nunta/MihaiBianca/023-024.jpg',
+        '/assets/images/nunta/MihaiBianca/033-034.jpg'
     ],
     botez: [
-        '/placeholder.svg?height=800&width=1200&text=Baptism+Photo+1',
-        '/placeholder.svg?height=800&width=1200&text=Baptism+Photo+2',
-        '/placeholder.svg?height=800&width=1200&text=Baptism+Photo+3',
-        '/placeholder.svg?height=800&width=1200&text=Baptism+Photo+4',
-        '/placeholder.svg?height=800&width=1200&text=Baptism+Photo+5',
-        '/placeholder.svg?height=800&width=1200&text=Baptism+Photo+6'
+        '/assets/images/Botez/NOAH/001-002.jpg',
+        
+        '/assets/images/Botez/NOAH/005-006.jpg',
+        '/assets/images/Botez/NOAH/007-008.jpg',
+        '/assets/images/Botez/NOAH/009-010.jpg',
+        '/assets/images/Botez/NOAH/011-012.jpg',
+        '/assets/images/Botez/NOAH/013-014.jpg',
+        '/assets/images/Botez/NOAH/015-016.jpg',
+        '/assets/images/Botez/NOAH/017-018.jpg',
+        '/assets/images/Botez/NOAH/019-020.jpg',
+        '/assets/images/Botez/NOAH/021-022.jpg',
+        '/assets/images/Botez/NOAH/023-024.jpg',
+        '/assets/images/Botez/NOAH/025-026.jpg',
+        '/assets/images/Botez/NOAH/027-028.jpg',
+        '/assets/images/Botez/NOAH/029-030.jpg',
+        
     ],
     cuplu: [
         '/placeholder.svg?height=800&width=1200&text=Couple+Photo+1',
