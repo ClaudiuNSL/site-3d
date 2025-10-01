@@ -1,12 +1,15 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import EmojiSelector from '@/components/EmojiSelector'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 
 export default function NewCategoryPage() {
   const [formData, setFormData] = useState({
     name: '',
+    subtitle: '',
+    icon: '',
     description: '',
     order: 0
   })
@@ -98,6 +101,31 @@ export default function NewCategoryPage() {
                   min="0"
                 />
               </div>
+            </div>
+
+            <div className="col-span-full">
+              <label htmlFor="subtitle" className="block text-sm font-medium leading-6 text-gray-900">
+                Subtitlu
+              </label>
+              <div className="mt-2">
+                <input
+                  type="text"
+                  name="subtitle"
+                  id="subtitle"
+                  value={formData.subtitle}
+                  onChange={handleChange}
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-purple-600 sm:text-sm sm:leading-6"
+                  placeholder="ex: O zi, o viață de amintiri"
+                />
+              </div>
+            </div>
+
+            <div className="col-span-full">
+              <EmojiSelector
+                value={formData.icon}
+                onChange={(emoji) => setFormData(prev => ({ ...prev, icon: emoji }))}
+                label="Icon (Emoji)"
+              />
             </div>
 
             <div className="col-span-full">

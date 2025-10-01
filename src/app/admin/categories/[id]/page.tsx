@@ -1,5 +1,6 @@
 'use client'
 
+import EmojiSelector from '@/components/EmojiSelector'
 import { Category } from '@/types'
 import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
@@ -17,6 +18,8 @@ export default function EditCategoryPage() {
 
   const [formData, setFormData] = useState({
     name: '',
+    subtitle: '',
+    icon: '',
     description: '',
     order: 1,
     isActive: true
@@ -33,6 +36,8 @@ export default function EditCategoryPage() {
         setCategory(categoryData)
         setFormData({
           name: categoryData.name,
+          subtitle: categoryData.subtitle || '',
+          icon: categoryData.icon || '',
           description: categoryData.description || '',
           order: categoryData.order,
           isActive: categoryData.isActive
@@ -152,6 +157,28 @@ export default function EditCategoryPage() {
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
               placeholder="ex. Nuntă"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="subtitle" className="block text-sm font-medium text-gray-700 mb-2">
+              Subtitlu
+            </label>
+            <input
+              type="text"
+              id="subtitle"
+              value={formData.subtitle}
+              onChange={(e) => setFormData({ ...formData, subtitle: e.target.value })}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+              placeholder="ex. O zi, o viață de amintiri"
+            />
+          </div>
+
+          <div>
+            <EmojiSelector
+              value={formData.icon}
+              onChange={(emoji) => setFormData({ ...formData, icon: emoji })}
+              label="Icon (Emoji)"
             />
           </div>
 
