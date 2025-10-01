@@ -9,6 +9,8 @@ export interface Category {
   id: string
   name: string
   slug: string
+  subtitle?: string | null
+  icon?: string | null
   description?: string | null
   order: number
   isActive: boolean

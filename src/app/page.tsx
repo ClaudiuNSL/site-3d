@@ -1,107 +1,45 @@
 'use client'
 
+import CategoryViewModal from '@/components/CategoryViewModal'
+import { Category } from '@/types'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import './styles.css'
 
 export default function Home() {
-  const [isGalleryOpen, setIsGalleryOpen] = useState(false)
-  const [isLightboxOpen, setIsLightboxOpen] = useState(false)
-  const [currentGallery, setCurrentGallery] = useState('')
-  const [currentImage, setCurrentImage] = useState('')
-  const [galleryTitle, setGalleryTitle] = useState('')
+  const [categories, setCategories] = useState<Category[]>([])
+  const [selectedCategory, setSelectedCategory] = useState<Category | null>(null)
+  const [loading, setLoading] = useState(true)
 
-  // Gallery data for each service
-  const galleryData = {
-    nunta: [
-      '/assets/images/nunta/MihaiBianca/001-002.jpg',
-      '/assets/images/nunta/MihaiBianca/007-008.jpg',
-      '/assets/images/nunta/MihaiBianca/011-012.jpg',
-      '/assets/images/nunta/MihaiBianca/013-014.jpg',
-      '/assets/images/nunta/MihaiBianca/019-020.jpg',
-      '/assets/images/nunta/MihaiBianca/021-022.jpg',
-      '/assets/images/nunta/MihaiBianca/023-024.jpg',
-      '/assets/images/nunta/MihaiBianca/033-034.jpg'
-    ],
-    botez: [
-      '/assets/images/Botez/NOAH/001-002.jpg',
-      '/assets/images/Botez/NOAH/005-006.jpg',
-      '/assets/images/Botez/NOAH/007-008.jpg',
-      '/assets/images/Botez/NOAH/009-010.jpg',
-      '/assets/images/Botez/NOAH/011-012.jpg',
-      '/assets/images/Botez/NOAH/013-014.jpg',
-      '/assets/images/Botez/NOAH/015-016.jpg',
-      '/assets/images/Botez/NOAH/017-018.jpg',
-      '/assets/images/Botez/NOAH/019-020.jpg',
-      '/assets/images/Botez/NOAH/021-022.jpg',
-      '/assets/images/Botez/NOAH/023-024.jpg',
-      '/assets/images/Botez/NOAH/025-026.jpg',
-      '/assets/images/Botez/NOAH/027-028.jpg',
-      '/assets/images/Botez/NOAH/029-030.jpg'
-    ],
-    'save-date': [
-      '/assets/images/saveTheDate/112A1791-Enhanced-NR.jpg',
-      '/assets/images/saveTheDate/112A1836-Enhanced-NR.jpg',
-      '/assets/images/saveTheDate/112A1877-Enhanced-NR.jpg',
-      '/assets/images/saveTheDate/112A1895-Enhanced-NR.jpg',
-      '/assets/images/saveTheDate/112A1916-Enhanced-NR.jpg',
-      '/assets/images/saveTheDate/112A1931-Enhanced-NR.jpg',
-      '/assets/images/saveTheDate/112A1973-Enhanced-NR.jpg',
-      '/assets/images/saveTheDate/112A1977-Enhanced-NR.jpg',
-      '/assets/images/saveTheDate/112A1986-Enhanced-NR.jpg',
-      '/assets/images/saveTheDate/5J9A3445-Enhanced-NR.jpg',
-      '/assets/images/saveTheDate/5J9A3459-Enhanced-NR.jpg',
-      '/assets/images/saveTheDate/5J9A3464-Enhanced-NR.jpg',
-      '/assets/images/saveTheDate/5J9A3468-Enhanced-NR.jpg',
-      '/assets/images/saveTheDate/5J9A3470-Enhanced-NR.jpg',
-      '/assets/images/saveTheDate/5J9A3499-Enhanced-NR-2.jpg'
-    ]
-  }
-
-  // Service titles for gallery modal
-  const serviceTitles = {
-    nunta: 'Galerie Nuntă',
-    botez: 'Galerie Botez',
-    'save-date': 'Galerie Save the Date'
-  }
-
-  // Open gallery modal
-  const openGallery = (serviceType: string) => {
-    const images = galleryData[serviceType as keyof typeof galleryData]
-    const title = serviceTitles[serviceType as keyof typeof serviceTitles]
-    
-    if (!images || images.length === 0) {
-      console.error('No images found for service:', serviceType)
-      return
+  // Fetch categories from API
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch('/api/categories')
+        if (response.ok) {
+          const data = await response.json()
+          setCategories(data)
+        }
+      } catch (error) {
+        console.error('Error fetching categories:', error)
+      } finally {
+        setLoading(false)
+      }
     }
-    
-    setCurrentGallery(serviceType)
-    setGalleryTitle(title)
-    setIsGalleryOpen(true)
+
+    fetchCategories()
+  }, [])
+
+  // Handle category card click
+  const handleCategoryClick = (category: Category) => {
+    setSelectedCategory(category)
     document.body.style.overflow = 'hidden'
   }
 
-  // Close gallery modal
-  const closeGallery = () => {
-    setIsGalleryOpen(false)
+  // Close modal
+  const closeModal = () => {
+    setSelectedCategory(null)
     document.body.style.overflow = 'auto'
-  }
-
-  // Open lightbox
-  const openLightbox = (imageSrc: string) => {
-    setCurrentImage(imageSrc)
-    setIsLightboxOpen(true)
-  }
-
-  // Close lightbox
-  const closeLightbox = () => {
-    setIsLightboxOpen(false)
-    setCurrentImage('')
-  }
-
-  // Handle service card clicks
-  const handleServiceCardClick = (serviceType: string) => {
-    openGallery(serviceType)
   }
 
   useEffect(() => {
@@ -219,12 +157,8 @@ export default function Home() {
 
     // Handle keyboard events for modals
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        if (isLightboxOpen) {
-          closeLightbox()
-        } else if (isGalleryOpen) {
-          closeGallery()
-        }
+      if (e.key === 'Escape' && selectedCategory) {
+        closeModal()
       }
     }
 
@@ -306,7 +240,7 @@ export default function Home() {
         contactForm.removeEventListener('submit', handleFormSubmit)
       }
     }
-  }, [isGalleryOpen, isLightboxOpen])
+  }, [selectedCategory])
 
   return (
     <>
@@ -397,88 +331,70 @@ export default function Home() {
           <h2 className="section-title">Serviciile Mele</h2>
           <p className="section-subtitle">Fiecare moment are povestea lui. Lasă-mă să o surprind pentru tine.</p>
           
-          <div className="service-grid">
-            {/* Wedding */}
-            <div className="service-card" data-service="nunta">
-              <div className="card-inner">
-                <div className="card-front">
-                  <div className="service-icon">💍</div>
-                  <h3>Nuntă</h3>
-                  <h4>O zi, o viață de amintiri</h4>
-                  <p>Într-o zi, două suflete spun &ldquo;da&rdquo; pentru totdeauna. Nunta nu este doar un eveniment – este începutul unei povești...</p>
-                  <div className="card-hint">
-                    <i className="fas fa-camera"></i>
-                    <span>Hover pentru preview</span>
-                  </div>
-                </div>
-                <div className="card-back">
-                  <Image src="/placeholder.svg?height=400&width=600&text=Wedding+Photography" alt="Wedding Photography" width={600} height={400} />
-                  <div className="card-overlay">
-                    <h3>Nuntă</h3>
-                    <p>O zi, o viață de amintiri</p>
-                    <button className="view-gallery-btn" onClick={() => handleServiceCardClick('nunta')}>
-                      <i className="fas fa-camera"></i>
-                      <span>Vezi galeria →</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
+          {loading ? (
+            <div className="flex justify-center items-center py-20">
+              <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-purple-600"></div>
             </div>
+          ) : categories.length > 0 ? (
+            <div className="service-grid">
+              {categories.map((category) => {
+                // Get first image from first event for preview
+                const previewImage = category.events?.[0]?.images?.[0]
+                const truncatedDescription = category.description 
+                  ? category.description.length > 120 
+                    ? category.description.substring(0, 120) + '...' 
+                    : category.description
+                  : ''
 
-            {/* Baptism */}
-            <div className="service-card" data-service="botez">
-              <div className="card-inner">
-                <div className="card-front">
-                  <div className="service-icon">👶</div>
-                  <h3>Botez</h3>
-                  <h4>Magia începuturilor</h4>
-                  <p>Sunt zile care trec și zile care rămân în suflet pentru totdeauna. Prima băiță în cristelniță...</p>
-                  <div className="card-hint">
-                    <i className="fas fa-camera"></i>
-                    <span>Hover pentru preview</span>
+                return (
+                  <div key={category.id} className="service-card" data-service={category.slug}>
+                    <div className="card-inner">
+                      <div className="card-front">
+                        {category.icon && <div className="service-icon">{category.icon}</div>}
+                        <h3>{category.name}</h3>
+                        {category.subtitle && <h4>{category.subtitle}</h4>}
+                        <p>{truncatedDescription}</p>
+                        <div className="card-hint">
+                          <i className="fas fa-camera"></i>
+                          <span>Hover pentru preview</span>
+                        </div>
+                      </div>
+                      <div className="card-back">
+                        {previewImage ? (
+                          <Image 
+                            src={previewImage.thumbnailUrl || previewImage.url} 
+                            alt={category.name} 
+                            width={600} 
+                            height={400} 
+                            className="object-cover w-full h-full"
+                          />
+                        ) : (
+                          <div className="w-full h-full bg-gradient-to-br from-purple-400 to-indigo-600 flex items-center justify-center">
+                            {category.icon && <span className="text-8xl opacity-30">{category.icon}</span>}
+                          </div>
+                        )}
+                        <div className="card-overlay">
+                          <h3>{category.name}</h3>
+                          {category.subtitle && <p>{category.subtitle}</p>}
+                          <button 
+                            className="view-gallery-btn" 
+                            onClick={() => handleCategoryClick(category)}
+                          >
+                            <i className="fas fa-camera"></i>
+                            <span>Vezi galeria →</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                </div>
-                <div className="card-back">
-                  <Image src="/placeholder.svg?height=400&width=600&text=Baptism+Photography" alt="Baptism Photography" width={600} height={400} />
-                  <div className="card-overlay">
-                    <h3>Botez</h3>
-                    <p>Magia începuturilor</p>
-                    <button className="view-gallery-btn" onClick={() => handleServiceCardClick('botez')}>
-                      <i className="fas fa-camera"></i>
-                      <span>Vezi galeria →</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
+                )
+              })}
             </div>
-
-            {/* Save the Date */}
-            <div className="service-card" data-service="save-date">
-              <div className="card-inner">
-                <div className="card-front">
-                  <div className="service-icon">📅</div>
-                  <h3>Save the Date</h3>
-                  <h4>Primul capitol din povestea voastră de nuntă</h4>
-                  <p>Totul începe cu o întrebare și un &ldquo;da&rdquo; spus din inimă. Urmează planuri, visuri, idei...</p>
-                  <div className="card-hint">
-                    <i className="fas fa-camera"></i>
-                    <span>Hover pentru preview</span>
-                  </div>
-                </div>
-                <div className="card-back">
-                  <Image src="/placeholder.svg?height=400&width=600&text=Save+the+Date" alt="Save the Date" width={600} height={400} />
-                  <div className="card-overlay">
-                    <h3>Save the Date</h3>
-                    <p>Primul capitol din povestea voastră</p>
-                    <button className="view-gallery-btn" onClick={() => handleServiceCardClick('save-date')}>
-                      <i className="fas fa-camera"></i>
-                      <span>Vezi galeria →</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
+          ) : (
+            <div className="text-center py-20">
+              <p className="text-gray-600 text-lg">Serviciile vor fi disponibile în curând.</p>
             </div>
-          </div>
+          )}
         </div>
       </section>
 
@@ -529,15 +445,11 @@ export default function Home() {
                 <input type="tel" name="phone" placeholder="Telefon" required />
                 <select name="service" required>
                   <option value="">Selectează serviciul</option>
-                  <option value="nunta">Nuntă</option>
-                  <option value="botez">Botez</option>
-                  <option value="cuplu">Cuplu</option>
-                  <option value="familie">Familie</option>
-                  <option value="amuzante">Fotografii amuzante</option>
-                  <option value="save-date">Save the Date</option>
-                  <option value="trash-dress">Trash the Dress</option>
-                  <option value="absolvire">Absolvire</option>
-                  <option value="profesional">Profesional</option>
+                  {categories.map((category) => (
+                    <option key={category.id} value={category.slug}>
+                      {category.name}
+                    </option>
+                  ))}
                 </select>
                 <textarea name="message" placeholder="Spune-mi despre evenimentul tău..." rows={5}></textarea>
                 <button type="submit" className="submit-btn">
@@ -550,34 +462,13 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Gallery Modal */}
-      <div id="gallery-modal" className="gallery-modal" style={{ display: isGalleryOpen ? 'block' : 'none' }}>
-        <div className="gallery-content">
-          <div className="gallery-header">
-            <h2 id="gallery-title">{galleryTitle}</h2>
-            <button className="close-gallery" id="close-gallery" onClick={closeGallery}>
-              <i className="fas fa-times"></i>
-            </button>
-          </div>
-          <div className="gallery-grid" id="gallery-grid">
-            {isGalleryOpen && currentGallery && galleryData[currentGallery as keyof typeof galleryData]?.map((imageSrc, index) => (
-              <div key={index} className="gallery-item" onClick={() => openLightbox(imageSrc)}>
-                <Image src={imageSrc} alt={`${galleryTitle} ${index + 1}`} width={300} height={200} />
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Image Lightbox */}
-      <div id="lightbox" className="lightbox" style={{ display: isLightboxOpen ? 'block' : 'none' }} onClick={closeLightbox}>
-        <div className="lightbox-content">
-          <Image id="lightbox-image" src={currentImage} alt="" width={800} height={600} />
-          <button className="close-lightbox" id="close-lightbox" onClick={closeLightbox}>
-            <i className="fas fa-times"></i>
-          </button>
-        </div>
-      </div>
+      {/* Category View Modal */}
+      {selectedCategory && (
+        <CategoryViewModal
+          category={selectedCategory}
+          onClose={closeModal}
+        />
+      )}
 
       {/* Footer */}
       <footer className="footer">
