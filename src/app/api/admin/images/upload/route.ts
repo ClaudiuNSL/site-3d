@@ -4,14 +4,9 @@ import { put } from '@vercel/blob'
 import { saveFileLocally } from '@/lib/local-storage'
 import { NextRequest, NextResponse } from 'next/server'
 
-// Configurare pentru body size mare
-export const config = {
-  api: {
-    bodyParser: {
-      sizeLimit: '100mb', // Permite fișiere până la 100MB
-    },
-  },
-}
+// Configurare pentru body size mare (Next.js 16+)
+export const maxDuration = 300 // 5 minute timeout pentru upload-uri mari
+export const dynamic = 'force-dynamic'
 
 // Verifică dacă avem token Vercel Blob
 const hasVercelBlob = !!process.env.BLOB_READ_WRITE_TOKEN
