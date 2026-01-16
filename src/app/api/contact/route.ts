@@ -1,10 +1,18 @@
 import { NextResponse } from 'next/server'
 import { Resend } from 'resend'
 
-// Inițializăm Resend cu API key-ul din .env
-const resend = new Resend(process.env.RESEND_API_KEY)
-
 export async function POST(request: Request) {
+  // Verificăm dacă avem API key
+  if (!process.env.RESEND_API_KEY) {
+    console.error('RESEND_API_KEY is not configured')
+    return NextResponse.json(
+      { error: 'Serviciul de email nu este configurat. Te rog contactează-ne direct la costinfoto@gmail.com' },
+      { status: 503 }
+    )
+  }
+
+  // Inițializăm Resend doar când e folosit
+  const resend = new Resend(process.env.RESEND_API_KEY)
   try {
     // Extragem datele din request
     const body = await request.json()
