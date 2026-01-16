@@ -199,18 +199,18 @@ export default function EventImagesPage() {
           <div className="space-y-4">
             <div>
               <label htmlFor="image-upload" className="block text-sm font-medium text-gray-700 mb-2">
-                Selectează imagini (JPEG, PNG, WebP)
+                Selectează imagini sau video-uri
               </label>
               <input
                 id="image-upload"
                 type="file"
                 multiple
-                accept="image/*"
+                accept="image/*,video/*"
                 onChange={handleFileSelect}
                 className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100"
               />
               <p className="mt-1 text-sm text-gray-500">
-                Poți selecta mai multe imagini simultan. Dimensiunea maximă: 50MB per imagine.
+                Poți selecta imagini (JPEG, PNG, WebP, HEIC) și video-uri (MP4, MOV). Dimensiunea maximă: 500MB per fișier.
               </p>
             </div>
 
@@ -274,46 +274,64 @@ export default function EventImagesPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-6">
-            {images.map((image) => (
-              <div key={image.id} className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-                <div className="aspect-w-16 aspect-h-12 bg-gray-100">
-                  <NextImage
-                    src={image.url}
-                    alt={image.alt || image.filename}
-                    width={300}
-                    height={200}
-                    className="w-full h-48 object-cover"
-                  />
-                </div>
-                <div className="p-4">
-                  <p className="text-sm font-medium text-gray-900 truncate">
-                    {image.filename}
-                  </p>
-                  <p className="text-xs text-gray-500 mt-1">
-                    Ordine: {image.order}
-                  </p>
-
-                  <div className="mt-3 flex items-center justify-between">
-                    <div className="flex items-center space-x-2">
-                      <input
-                        type="number"
-                        value={image.order}
-                        onChange={(e) => updateImageOrder(image.id, parseInt(e.target.value))}
-                        className="w-16 px-2 py-1 text-xs border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-purple-500"
+            {images.map((image) => {
+              const isVideo = image.mimeType?.startsWith('video/')
+              
+              return (
+                <div key={image.id} className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                  <div className="aspect-w-16 aspect-h-12 bg-gray-100 relative">
+                    {isVideo ? (
+                      <>
+                        <video
+                          src={image.url}
+                          className="w-full h-48 object-cover"
+                          controls
+                          preload="metadata"
+                        />
+                        <div className="absolute top-2 right-2 bg-purple-600 text-white text-xs px-2 py-1 rounded">
+                          🎥 Video
+                        </div>
+                      </>
+                    ) : (
+                      <NextImage
+                        src={image.url}
+                        alt={image.alt || image.filename}
+                        width={300}
+                        height={200}
+                        className="w-full h-48 object-cover"
                       />
-                      <span className="text-xs text-gray-500">ordine</span>
-                    </div>
+                    )}
+                  </div>
+                  <div className="p-4">
+                    <p className="text-sm font-medium text-gray-900 truncate">
+                      {image.filename}
+                    </p>
+                    <p className="text-xs text-gray-500 mt-1">
+                      Ordine: {image.order} {image.size && `• ${(image.size / 1024 / 1024).toFixed(1)}MB`}
+                    </p>
 
-                    <button
-                      onClick={() => handleDelete(image.id, image.filename)}
-                      className="text-red-600 hover:text-red-800 text-xs"
-                    >
-                      Șterge
-                    </button>
+                    <div className="mt-3 flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        <input
+                          type="number"
+                          value={image.order}
+                          onChange={(e) => updateImageOrder(image.id, parseInt(e.target.value))}
+                          className="w-16 px-2 py-1 text-xs border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-purple-500"
+                        />
+                        <span className="text-xs text-gray-500">ordine</span>
+                      </div>
+
+                      <button
+                        onClick={() => handleDelete(image.id, image.filename)}
+                        className="text-red-600 hover:text-red-800 text-xs"
+                      >
+                        Șterge
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
         )}
       </div>

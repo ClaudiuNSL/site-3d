@@ -204,70 +204,101 @@ export default function EventViewModal({ event, onClose, onBack }: EventViewModa
                   gridTemplateColumns: 'repeat(2, 1fr)',
                   gap: '0.75rem'
                 }}>
-                  {event.images.map((image, index) => (
-                    <div
-                      key={image.id}
-                      onClick={() => handleImageClick(index)}
-                      style={{
-                        cursor: 'pointer',
-                        aspectRatio: '1/1',
-                        backgroundColor: '#f3f4f6',
-                        borderRadius: '0.5rem',
-                        overflow: 'hidden',
-                        position: 'relative'
-                      }}
-                    >
-                      <Image
-                        src={image.thumbnailUrl || image.url}
-                        alt={image.alt || `${event.name} - Image ${index + 1}`}
-                        fill
+                  {event.images.map((image, index) => {
+                    const isVideo = image.mimeType?.startsWith('video/')
+                    
+                    return (
+                      <div
+                        key={image.id}
+                        onClick={() => handleImageClick(index)}
                         style={{
-                          objectFit: 'cover',
-                          transition: 'transform 0.3s ease'
+                          cursor: 'pointer',
+                          aspectRatio: '1/1',
+                          backgroundColor: '#f3f4f6',
+                          borderRadius: '0.5rem',
+                          overflow: 'hidden',
+                          position: 'relative'
                         }}
-                        onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.1)'}
-                        onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
-                        sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                      />
-                      <div style={{
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        backgroundColor: 'rgba(0, 0, 0, 0)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        transition: 'background-color 0.3s ease'
-                      }}
-                      onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.2)'}
-                      onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0)'}
                       >
-                        <svg 
-                          style={{
-                            width: '2rem',
-                            height: '2rem',
-                            color: 'white',
-                            opacity: 0,
-                            transition: 'opacity 0.3s ease'
-                          }}
-                          onMouseEnter={(e) => e.currentTarget.style.opacity = '1'}
-                          onMouseLeave={(e) => e.currentTarget.style.opacity = '0'}
-                          fill="none" 
-                          stroke="currentColor" 
-                          viewBox="0 0 24 24"
-                        >
-                          <path 
-                            strokeLinecap="round" 
-                            strokeLinejoin="round" 
-                            strokeWidth={2} 
-                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" 
+                        {isVideo ? (
+                          <>
+                            <video
+                              src={image.url}
+                              style={{
+                                width: '100%',
+                                height: '100%',
+                                objectFit: 'cover'
+                              }}
+                              preload="metadata"
+                            />
+                            <div style={{
+                              position: 'absolute',
+                              top: '0.5rem',
+                              right: '0.5rem',
+                              backgroundColor: 'rgba(147, 51, 234, 0.9)',
+                              color: 'white',
+                              padding: '0.25rem 0.5rem',
+                              borderRadius: '0.25rem',
+                              fontSize: '0.75rem',
+                              fontWeight: '600'
+                            }}>
+                              🎥 Video
+                            </div>
+                          </>
+                        ) : (
+                          <Image
+                            src={image.thumbnailUrl || image.url}
+                            alt={image.alt || `${event.name} - Image ${index + 1}`}
+                            fill
+                            style={{
+                              objectFit: 'cover',
+                              transition: 'transform 0.3s ease'
+                            }}
+                            onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.1)'}
+                            onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
                           />
-                        </svg>
+                        )}
+                        <div style={{
+                          position: 'absolute',
+                          top: 0,
+                          left: 0,
+                          right: 0,
+                          bottom: 0,
+                          backgroundColor: 'rgba(0, 0, 0, 0)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          transition: 'background-color 0.3s ease'
+                        }}
+                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.2)'}
+                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0)'}
+                        >
+                          <svg 
+                            style={{
+                              width: '2rem',
+                              height: '2rem',
+                              color: 'white',
+                              opacity: 0,
+                              transition: 'opacity 0.3s ease'
+                            }}
+                            onMouseEnter={(e) => e.currentTarget.style.opacity = '1'}
+                            onMouseLeave={(e) => e.currentTarget.style.opacity = '0'}
+                            fill="none" 
+                            stroke="currentColor" 
+                            viewBox="0 0 24 24"
+                          >
+                            <path 
+                              strokeLinecap="round" 
+                              strokeLinejoin="round" 
+                              strokeWidth={2} 
+                              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" 
+                            />
+                          </svg>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    )
+                  })}
                 </div>
               </>
             ) : (
@@ -405,19 +436,33 @@ export default function EventViewModal({ event, onClose, onBack }: EventViewModa
             maxWidth: '90vw',
             maxHeight: '90vh'
           }} onClick={(e) => e.stopPropagation()}>
-            <Image
-              src={event.images[selectedImageIndex].url}
-              alt={event.images[selectedImageIndex].alt || `${event.name} - Image ${selectedImageIndex + 1}`}
-              width={event.images[selectedImageIndex].width || 1200}
-              height={event.images[selectedImageIndex].height || 800}
-              style={{
-                maxWidth: '100%',
-                maxHeight: '90vh',
-                width: 'auto',
-                height: 'auto',
-                objectFit: 'contain'
-              }}
-            />
+            {event.images[selectedImageIndex].mimeType?.startsWith('video/') ? (
+              <video
+                src={event.images[selectedImageIndex].url}
+                controls
+                autoPlay
+                style={{
+                  maxWidth: '100%',
+                  maxHeight: '90vh',
+                  width: 'auto',
+                  height: 'auto'
+                }}
+              />
+            ) : (
+              <Image
+                src={event.images[selectedImageIndex].url}
+                alt={event.images[selectedImageIndex].alt || `${event.name} - Image ${selectedImageIndex + 1}`}
+                width={event.images[selectedImageIndex].width || 1200}
+                height={event.images[selectedImageIndex].height || 800}
+                style={{
+                  maxWidth: '100%',
+                  maxHeight: '90vh',
+                  width: 'auto',
+                  height: 'auto',
+                  objectFit: 'contain'
+                }}
+              />
+            )}
             
             <div style={{
               position: 'absolute',

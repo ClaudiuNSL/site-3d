@@ -45,6 +45,8 @@ export interface Image {
   width?: number | null
   height?: number | null
   size?: number | null
+  mimeType?: string | null  // Tipul fișierului (image/jpeg, video/mp4, etc.)
+  duration?: number | null   // Durata video-ului în secunde
   order: number
   isActive: boolean
   createdAt: Date

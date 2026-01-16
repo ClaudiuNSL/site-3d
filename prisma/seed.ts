@@ -5,7 +5,7 @@ const prisma = new PrismaClient()
 
 async function main() {
   // Create admin user
-  const hashedPassword = await hash('admin123@', 12)
+  const hashedPassword = await hash('ionut@33', 12)
 
   const admin = await prisma.user.upsert({
     where: { email: 'costinfoto@gmail.com' },

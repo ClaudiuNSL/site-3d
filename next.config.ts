@@ -11,6 +11,13 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  // Configurare pentru fișiere mari (imagini și video)
+  experimental: {
+    // Permite body size mai mare pentru upload-uri
+    serverActions: {
+      bodySizeLimit: '100mb', // Limită de 100MB pentru upload-uri
+    },
+  },
 };
 
 export default nextConfig;

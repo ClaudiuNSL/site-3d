@@ -110,7 +110,7 @@ export default function Home() {
     // Form submission
     const contactForm = document.getElementById('contact-form') as HTMLFormElement
 
-    const handleFormSubmit = (e: Event) => {
+    const handleFormSubmit = async (e: Event) => {
       e.preventDefault()
       
       const formData = new FormData(contactForm)
@@ -136,19 +136,41 @@ export default function Home() {
         return
       }
       
-      // Simulate form submission
+      // Trimitem formularul către API
       const submitBtn = contactForm.querySelector('.submit-btn') as HTMLButtonElement
       const originalText = submitBtn.innerHTML
       
       submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Se trimite...'
       submitBtn.disabled = true
       
-      setTimeout(() => {
+      try {
+        // Facem request către API-ul nostru
+        const response = await fetch('/api/contact', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+        })
+
+        if (response.ok) {
+          // Succes! Email-ul a fost trimis
+          contactForm.reset()
+          showNotification('Mulțumesc pentru mesaj! Voi reveni cu un răspuns în cel mai scurt timp.', 'success')
+        } else {
+          // Eroare de la server
+          const error = await response.json()
+          showNotification(error.error || 'A apărut o eroare. Te rog încearcă din nou.', 'error')
+        }
+      } catch (error) {
+        // Eroare de rețea
+        console.error('Error submitting form:', error)
+        showNotification('A apărut o eroare la trimiterea mesajului. Verifică conexiunea la internet.', 'error')
+      } finally {
+        // Resetăm butonul
         submitBtn.innerHTML = originalText
         submitBtn.disabled = false
-        contactForm.reset()
-        showNotification('Mulțumesc pentru mesaj! Voi reveni cu un răspuns în cel mai scurt timp.', 'success')
-      }, 2000)
+      }
     }
 
     if (contactForm) {
@@ -306,10 +328,10 @@ export default function Home() {
             <h1>Banciu Costin</h1>
             <p className="subtitle">F O T O G R A F </p>
             <p className="hero-description">Surprind momente, creez amintiri</p>
-            <button className="cta-button">
+            {/* <button className="cta-button">
               <span>Descoperă serviciile</span>
               <i className="fas fa-arrow-right"></i>
-            </button>
+            </button> */}
           </div>
         </div>
         <div className="hero-image">

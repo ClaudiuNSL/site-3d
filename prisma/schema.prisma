@@ -6,7 +6,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
@@ -70,6 +70,8 @@ model Image {
   width       Int?
   height      Int?
   size        Int?
+  mimeType    String?  // Tipul fișierului (image/jpeg, video/mp4, etc.)
+  duration    Int?     // Durata video-ului în secunde (doar pentru video)
   order       Int      @default(0)
   isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())
