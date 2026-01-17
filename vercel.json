@@ -1,0 +1,10 @@
+{
+  "functions": {
+    "src/app/api/admin/images/upload/route.ts": {
+      "maxDuration": 300
+    }
+  },
+  "limits": {
+    "duration": 300000
+  }
+}

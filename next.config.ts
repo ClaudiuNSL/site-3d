@@ -15,8 +15,15 @@ const nextConfig: NextConfig = {
   experimental: {
     // Permite body size mai mare pentru upload-uri
     serverActions: {
-      bodySizeLimit: '100mb', // Limită de 100MB pentru upload-uri
+      bodySizeLimit: '50mb', // Crescut la 50MB
     },
+  },
+  // Configurare API routes
+  api: {
+    bodyParser: {
+      sizeLimit: '50mb',
+    },
+    responseLimit: false,
   },
 };
 
