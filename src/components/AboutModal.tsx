@@ -1,7 +1,6 @@
 'use client'
 
 import Image from 'next/image'
-import { useState } from 'react'
 
 interface AboutModalProps {
   isOpen: boolean
@@ -96,14 +95,16 @@ export default function AboutModal({ isOpen, onClose }: AboutModalProps) {
               boxShadow: '0 10px 30px rgba(0, 0, 0, 0.2)'
             }}>
               <Image
-                src="/assets/images/despre-mine.jpg" // Adaugă poza ta aici
+                src="/assets/images/despre-mine.jpg"
                 alt="Banciu Costin - Fotograf"
                 width={300}
                 height={400}
+                priority={true}
                 style={{
                   width: '100%',
                   height: 'auto',
-                  objectFit: 'cover'
+                  objectFit: 'cover',
+                  filter: 'grayscale(100%)'
                 }}
               />
             </div>
