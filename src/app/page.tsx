@@ -360,7 +360,20 @@ export default function Home() {
           </div>
         </div>
         <div className="hero-image">
-          <Image src="/assets/images/hero-image.png" alt="Banciu Costin Photography" width={600} height={400} />
+          <Image 
+            src="/assets/images/hero-image.png" 
+            alt="Banciu Costin Photography" 
+            width={1200} 
+            height={800}
+            quality={100}
+            priority={true}
+            sizes="(max-width: 768px) 100vw, 60vw"
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover'
+            }}
+          />
         </div>
         <div className="hero-overlay"></div>
       </section>

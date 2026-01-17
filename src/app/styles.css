@@ -314,12 +314,23 @@ a {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    image-rendering: auto;
+    
+    /* Optimizare pentru claritate maximă */
     image-rendering: -webkit-optimize-contrast;
+    image-rendering: auto;
+    
+    /* Filtre pentru îmbunătățirea imaginii */
     filter: contrast(1.1) brightness(1.05) saturate(1.1);
+    
+    /* Hardware acceleration pentru performanță */
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
     transform: translateZ(0);
+    will-change: transform;
+    
+    /* Optimizare pentru afișare HD */
+    -webkit-transform: translateZ(0);
+    -webkit-perspective: 1000px;
 }
 
 .hero-overlay {
