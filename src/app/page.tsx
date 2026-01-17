@@ -1,6 +1,7 @@
 'use client'
 
 import CategoryViewModal from '@/components/CategoryViewModal'
+import AboutModal from '@/components/AboutModal'
 import { Category } from '@/types'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
@@ -10,6 +11,7 @@ export default function Home() {
   const [categories, setCategories] = useState<Category[]>([])
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null)
   const [loading, setLoading] = useState(true)
+  const [isAboutModalOpen, setIsAboutModalOpen] = useState(false)
 
   // Fetch categories from API
   useEffect(() => {
@@ -42,6 +44,17 @@ export default function Home() {
     document.body.style.overflow = 'auto'
   }
 
+  // Handle about modal
+  const openAboutModal = () => {
+    setIsAboutModalOpen(true)
+    document.body.style.overflow = 'hidden'
+  }
+
+  const closeAboutModal = () => {
+    setIsAboutModalOpen(false)
+    document.body.style.overflow = 'auto'
+  }
+
   useEffect(() => {
     // Mobile menu toggle
     const hamburger = document.querySelector('.hamburger')
@@ -70,8 +83,20 @@ export default function Home() {
       e.preventDefault()
       const target = e.target as HTMLAnchorElement
       const targetId = target.getAttribute('href')
-      const targetSection = document.querySelector(targetId!)
       
+      // Handle special navigation
+      if (targetId === '#despre') {
+        openAboutModal()
+        return
+      }
+      
+      if (targetId === '#portofoliu') {
+        window.location.href = '/portofoliu'
+        return
+      }
+      
+      // Normal scroll navigation
+      const targetSection = document.querySelector(targetId!)
       if (targetSection) {
         targetSection.scrollIntoView({
           behavior: 'smooth',
@@ -491,6 +516,12 @@ export default function Home() {
           onClose={closeModal}
         />
       )}
+
+      {/* About Modal */}
+      <AboutModal
+        isOpen={isAboutModalOpen}
+        onClose={closeAboutModal}
+      />
 
       {/* Footer */}
       <footer className="footer">
