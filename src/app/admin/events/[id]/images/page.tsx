@@ -21,13 +21,13 @@ export default function EventImagesPage() {
     try {
       const response = await fetch(`/api/admin/events/${eventId}`)
       if (!response.ok) {
-        throw new Error('Evenimentul nu a fost găsit')
+        throw new Error('Evenimentul nu a fost gasit')
       }
       const eventData = await response.json()
       setEvent(eventData)
       setImages(eventData.images || [])
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Eroare la încărcarea evenimentului')
+      setError(err instanceof Error ? err.message : 'Eroare la incarcarea evenimentului')
     } finally {
       setLoading(false)
     }
@@ -48,7 +48,7 @@ export default function EventImagesPage() {
 
   const handleUpload = async () => {
     if (!selectedFiles || selectedFiles.length === 0) {
-      alert('Selectează cel puțin o imagine')
+      alert('Selecteaza cel putin o imagine')
       return
     }
 
@@ -69,7 +69,7 @@ export default function EventImagesPage() {
 
       if (!response.ok) {
         const errorData = await response.json()
-        throw new Error(errorData.error || 'Eroare la încărcarea imaginilor')
+        throw new Error(errorData.error || 'Eroare la incarcarea imaginilor')
       }
 
       const uploadedImages = await response.json()
@@ -82,14 +82,14 @@ export default function EventImagesPage() {
         fileInput.value = ''
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Eroare la încărcarea imaginilor')
+      setError(err instanceof Error ? err.message : 'Eroare la incarcarea imaginilor')
     } finally {
       setUploading(false)
     }
   }
 
   const handleDelete = async (imageId: string, fileName: string) => {
-    if (!confirm(`Ești sigur că vrei să ștergi imaginea "${fileName}"?`)) {
+    if (!confirm(`Esti sigur ca vrei sa stergi imaginea "${fileName}"?`)) {
       return
     }
 
@@ -100,12 +100,12 @@ export default function EventImagesPage() {
 
       if (!response.ok) {
         const errorData = await response.json()
-        throw new Error(errorData.error || 'Eroare la ștergerea imaginii')
+        throw new Error(errorData.error || 'Eroare la stergerea imaginii')
       }
 
       setImages(images.filter(img => img.id !== imageId))
     } catch (err) {
-      alert(err instanceof Error ? err.message : 'Eroare la ștergerea imaginii')
+      alert(err instanceof Error ? err.message : 'Eroare la stergerea imaginii')
     }
   }
 
@@ -135,7 +135,7 @@ export default function EventImagesPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-purple-600"></div>
+        <div className="w-10 h-10 border-2 border-[#fbbf24]/20 border-t-[#fbbf24] rounded-full animate-spin"></div>
       </div>
     )
   }
@@ -143,12 +143,12 @@ export default function EventImagesPage() {
   if (!event) {
     return (
       <div className="text-center py-12">
-        <h2 className="text-2xl font-semibold text-gray-900 mb-4">Evenimentul nu a fost găsit</h2>
+        <h2 className="text-2xl font-semibold text-white mb-4">Evenimentul nu a fost gasit</h2>
         <Link
           href="/admin/events"
-          className="text-purple-600 hover:text-purple-800"
+          className="text-[#fbbf24] hover:text-[#fbbf24]/80 transition-colors"
         >
-          Înapoi la evenimente
+          Inapoi la evenimente
         </Link>
       </div>
     )
@@ -158,28 +158,24 @@ export default function EventImagesPage() {
     <div>
       <div className="mb-8">
         <nav className="flex" aria-label="Breadcrumb">
-          <ol className="flex items-center space-x-4">
+          <ol className="flex items-center space-x-3">
             <li>
-              <Link href="/admin/dashboard" className="text-gray-500 hover:text-gray-700">
+              <Link href="/admin/dashboard" className="text-white/40 hover:text-white/60 transition-colors text-sm">
                 Dashboard
               </Link>
             </li>
             <li>
               <div className="flex items-center">
-                <svg className="flex-shrink-0 h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-                </svg>
-                <Link href="/admin/events" className="ml-4 text-gray-500 hover:text-gray-700">
+                <i className="fa-solid fa-chevron-right text-white/20 text-xs"></i>
+                <Link href="/admin/events" className="ml-3 text-white/40 hover:text-white/60 transition-colors text-sm">
                   Evenimente
                 </Link>
               </div>
             </li>
             <li>
               <div className="flex items-center">
-                <svg className="flex-shrink-0 h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-                </svg>
-                <span className="ml-4 text-gray-900 font-medium">Imagini - {event.name}</span>
+                <i className="fa-solid fa-chevron-right text-white/20 text-xs"></i>
+                <span className="ml-3 text-white font-medium text-sm">Imagini - {event.name}</span>
               </div>
             </li>
           </ol>
@@ -187,19 +183,19 @@ export default function EventImagesPage() {
       </div>
 
       <div className="mb-8">
-        <div className="bg-white shadow rounded-lg p-6">
-          <h2 className="text-lg font-medium text-gray-900 mb-4">Încarcă imagini noi</h2>
+        <div className="bg-[#111111] border border-white/[0.06] rounded-lg p-6">
+          <h2 className="font-['Playfair_Display'] text-lg font-medium text-white mb-4">Incarca imagini noi</h2>
 
           {error && (
-            <div className="mb-4 bg-red-50 border border-red-200 rounded-md p-4">
-              <p className="text-red-800">{error}</p>
+            <div className="mb-4 bg-red-500/10 border border-red-500/20 rounded-lg p-4">
+              <p className="text-red-400 text-sm">{error}</p>
             </div>
           )}
 
           <div className="space-y-4">
             <div>
-              <label htmlFor="image-upload" className="block text-sm font-medium text-gray-700 mb-2">
-                Selectează imagini sau video-uri
+              <label htmlFor="image-upload" className="block text-sm font-medium text-white/60 mb-2">
+                Selecteaza imagini sau video-uri
               </label>
               <input
                 id="image-upload"
@@ -207,23 +203,23 @@ export default function EventImagesPage() {
                 multiple
                 accept="image/*,video/*"
                 onChange={handleFileSelect}
-                className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100"
+                className="block w-full text-sm text-white/40 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-[#fbbf24]/10 file:text-[#fbbf24] hover:file:bg-[#fbbf24]/20 file:transition-colors file:cursor-pointer"
               />
-              <p className="mt-1 text-sm text-gray-500">
-                Poți selecta imagini (JPEG, PNG, WebP, HEIC) și video-uri (MP4, MOV). Dimensiunea maximă: 500MB per fișier.
+              <p className="mt-1 text-sm text-white/30">
+                Poti selecta imagini (JPEG, PNG, WebP, HEIC) si video-uri (MP4, MOV). Dimensiunea maxima: 500MB per fisier.
               </p>
             </div>
 
             {selectedFiles && selectedFiles.length > 0 && (
               <div>
-                <p className="text-sm text-gray-700 mb-2">
+                <p className="text-sm text-white/60 mb-2">
                   Imagini selectate: {selectedFiles.length}
                 </p>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
                   {Array.from(selectedFiles).map((file, index) => (
-                    <div key={index} className="bg-gray-100 rounded p-2">
-                      <p className="text-xs text-gray-600 truncate">{file.name}</p>
-                      <p className="text-xs text-gray-500">
+                    <div key={index} className="bg-white/[0.04] border border-white/[0.06] rounded-lg p-2">
+                      <p className="text-xs text-white/60 truncate">{file.name}</p>
+                      <p className="text-xs text-white/30">
                         {(file.size / 1024 / 1024).toFixed(2)} MB
                       </p>
                     </div>
@@ -235,22 +231,17 @@ export default function EventImagesPage() {
             <button
               onClick={handleUpload}
               disabled={!selectedFiles || selectedFiles.length === 0 || uploading}
-              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="inline-flex items-center px-5 py-2.5 text-sm font-medium text-black bg-[#fbbf24] rounded-lg hover:bg-[#fbbf24]/90 focus:outline-none focus:ring-2 focus:ring-[#fbbf24]/20 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               {uploading ? (
                 <>
-                  <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                  Se încarcă...
+                  <div className="w-4 h-4 border-2 border-black/20 border-t-black rounded-full animate-spin mr-2"></div>
+                  Se incarca...
                 </>
               ) : (
                 <>
-                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                  </svg>
-                  Încarcă imagini
+                  <i className="fa-solid fa-cloud-arrow-up mr-2"></i>
+                  Incarca imagini
                 </>
               )}
             </button>
@@ -258,28 +249,26 @@ export default function EventImagesPage() {
         </div>
       </div>
 
-      <div className="bg-white shadow rounded-lg">
-        <div className="px-6 py-4 border-b border-gray-200">
-          <h2 className="text-lg font-medium text-gray-900">
+      <div className="bg-[#111111] border border-white/[0.06] rounded-lg">
+        <div className="px-6 py-4 border-b border-white/[0.06]">
+          <h2 className="text-lg font-medium text-white">
             Imagini existente ({images.length})
           </h2>
         </div>
 
         {images.length === 0 ? (
           <div className="text-center py-12">
-            <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-            </svg>
-            <p className="mt-2 text-gray-500">Nu există imagini încă pentru acest eveniment.</p>
+            <i className="fa-regular fa-image text-4xl text-white/20 mb-3 block"></i>
+            <p className="text-white/40 text-sm">Nu exista imagini inca pentru acest eveniment.</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-6">
             {images.map((image) => {
               const isVideo = image.mimeType?.startsWith('video/')
-              
+
               return (
-                <div key={image.id} className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-                  <div className="aspect-w-16 aspect-h-12 bg-gray-100 relative">
+                <div key={image.id} className="bg-white/[0.02] border border-white/[0.06] rounded-lg overflow-hidden">
+                  <div className="aspect-w-16 aspect-h-12 bg-white/[0.04] relative">
                     {isVideo ? (
                       <>
                         <video
@@ -288,8 +277,8 @@ export default function EventImagesPage() {
                           controls
                           preload="metadata"
                         />
-                        <div className="absolute top-2 right-2 bg-purple-600 text-white text-xs px-2 py-1 rounded">
-                          🎥 Video
+                        <div className="absolute top-2 right-2 bg-[#fbbf24] text-black text-xs px-2 py-1 rounded-md font-medium">
+                          <i className="fa-solid fa-video mr-1"></i> Video
                         </div>
                       </>
                     ) : (
@@ -303,10 +292,10 @@ export default function EventImagesPage() {
                     )}
                   </div>
                   <div className="p-4">
-                    <p className="text-sm font-medium text-gray-900 truncate">
+                    <p className="text-sm font-medium text-white truncate">
                       {image.filename}
                     </p>
-                    <p className="text-xs text-gray-500 mt-1">
+                    <p className="text-xs text-white/30 mt-1">
                       Ordine: {image.order} {image.size && `• ${(image.size / 1024 / 1024).toFixed(1)}MB`}
                     </p>
 
@@ -316,16 +305,17 @@ export default function EventImagesPage() {
                           type="number"
                           value={image.order}
                           onChange={(e) => updateImageOrder(image.id, parseInt(e.target.value))}
-                          className="w-16 px-2 py-1 text-xs border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-purple-500"
+                          className="w-16 px-2 py-1 text-xs bg-white/[0.04] border border-white/[0.08] rounded-lg text-white focus:outline-none focus:border-[#fbbf24]/40 focus:ring-1 focus:ring-[#fbbf24]/20 transition-colors"
                         />
-                        <span className="text-xs text-gray-500">ordine</span>
+                        <span className="text-xs text-white/30">ordine</span>
                       </div>
 
                       <button
                         onClick={() => handleDelete(image.id, image.filename)}
-                        className="text-red-600 hover:text-red-800 text-xs"
+                        className="text-red-400 hover:text-red-300 text-xs transition-colors"
                       >
-                        Șterge
+                        <i className="fa-solid fa-trash-can mr-1"></i>
+                        Sterge
                       </button>
                     </div>
                   </div>

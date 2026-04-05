@@ -55,6 +55,21 @@ export interface Image {
   event?: Event
 }
 
+export interface HeroSlide {
+  id: string
+  filename: string
+  originalName?: string | null
+  url: string
+  alt?: string | null
+  title?: string | null
+  subtitle?: string | null
+  order: number
+  isActive: boolean
+  size?: number | null
+  createdAt: Date
+  updatedAt: Date
+}
+
 declare module "next-auth" {
   interface Session {
     user: {

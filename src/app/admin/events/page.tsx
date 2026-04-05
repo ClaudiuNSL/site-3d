@@ -17,16 +17,8 @@ export default function EventsPage() {
         fetch('/api/admin/events'),
         fetch('/api/admin/categories')
       ])
-
-      if (!eventsRes.ok || !categoriesRes.ok) {
-        throw new Error('Eroare la încărcarea datelor')
-      }
-
-      const [eventsData, categoriesData] = await Promise.all([
-        eventsRes.json(),
-        categoriesRes.json()
-      ])
-
+      if (!eventsRes.ok || !categoriesRes.ok) throw new Error('Eroare la încărcarea datelor')
+      const [eventsData, categoriesData] = await Promise.all([eventsRes.json(), categoriesRes.json()])
       setEvents(eventsData)
       setCategories(categoriesData)
     } catch (err) {
@@ -36,25 +28,16 @@ export default function EventsPage() {
     }
   }
 
-  useEffect(() => {
-    fetchData()
-  }, [])
+  useEffect(() => { fetchData() }, [])
 
   const handleDelete = async (id: string, name: string) => {
-    if (!confirm(`Ești sigur că vrei să ștergi evenimentul "${name}"?`)) {
-      return
-    }
-
+    if (!confirm(`Ești sigur că vrei să ștergi evenimentul "${name}"?`)) return
     try {
-      const response = await fetch(`/api/admin/events/${id}`, {
-        method: 'DELETE'
-      })
-
+      const response = await fetch(`/api/admin/events/${id}`, { method: 'DELETE' })
       if (!response.ok) {
         const errorData = await response.json()
         throw new Error(errorData.error || 'Eroare la ștergerea evenimentului')
       }
-
       setEvents(events.filter(event => event.id !== id))
     } catch (err) {
       alert(err instanceof Error ? err.message : 'Eroare la ștergerea evenimentului')
@@ -65,209 +48,119 @@ export default function EventsPage() {
     try {
       const response = await fetch(`/api/admin/events/${id}`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ isActive: !currentStatus })
       })
-
-      if (!response.ok) {
-        throw new Error('Eroare la actualizarea statusului')
-      }
-
+      if (!response.ok) throw new Error('Eroare la actualizarea statusului')
       const updatedEvent = await response.json()
-      setEvents(events.map(event =>
-        event.id === id ? updatedEvent : event
-      ))
+      setEvents(events.map(event => event.id === id ? updatedEvent : event))
     } catch (err) {
       alert(err instanceof Error ? err.message : 'Eroare la actualizarea statusului')
     }
   }
 
-  const filteredEvents = selectedCategory === 'all'
-    ? events
-    : events.filter(event => event.categoryId === selectedCategory)
+  const filteredEvents = selectedCategory === 'all' ? events : events.filter(event => event.categoryId === selectedCategory)
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-12">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-purple-600"></div>
+      <div className="flex items-center justify-center py-20">
+        <div className="w-10 h-10 border-2 border-[#fbbf24]/20 border-t-[#fbbf24] rounded-full animate-spin"></div>
       </div>
     )
   }
 
   return (
     <div>
-      <div className="sm:flex sm:items-center">
-        <div className="sm:flex-auto">
-          <h1 className="text-2xl font-semibold text-gray-900">Evenimente</h1>
-          <p className="mt-2 text-sm text-gray-700">
-            Gestionează evenimentele pentru fiecare categorie foto.
-          </p>
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="text-2xl font-light text-white" style={{fontFamily: "'Playfair Display', serif"}}>Evenimente</h1>
+          <p className="text-white/40 text-sm mt-1">Gestionează evenimentele pentru fiecare categorie</p>
         </div>
-        <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
-          <Link
-            href="/admin/events/new"
-            className="inline-flex items-center justify-center rounded-md border border-transparent bg-purple-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 sm:w-auto"
-          >
-            Adaugă eveniment
-          </Link>
-        </div>
+        <Link href="/admin/events/new" className="flex items-center gap-2 px-4 py-2.5 bg-[#fbbf24] text-[#0a0a0a] text-sm font-medium rounded-lg hover:bg-[#f59e0b] transition-colors">
+          <i className="fas fa-plus text-xs"></i>
+          Adaugă eveniment
+        </Link>
       </div>
 
-      {/* Filter by Category */}
-      <div className="mt-6">
-        <label htmlFor="category-filter" className="block text-sm font-medium text-gray-700 mb-2">
-          Filtrează după categorie:
-        </label>
-        <select
-          id="category-filter"
-          value={selectedCategory}
-          onChange={(e) => setSelectedCategory(e.target.value)}
-          className="block w-64 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
-        >
-          <option value="all">Toate categoriile</option>
+      {/* Filter */}
+      <div className="mb-6">
+        <div className="flex items-center gap-2 flex-wrap">
+          <button onClick={() => setSelectedCategory('all')} className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${selectedCategory === 'all' ? 'bg-[#fbbf24] text-[#0a0a0a] font-medium' : 'bg-[#111111] text-white/50 border border-white/[0.06] hover:text-white/80'}`}>
+            Toate
+          </button>
           {categories.map((category) => (
-            <option key={category.id} value={category.id}>
+            <button key={category.id} onClick={() => setSelectedCategory(category.id)} className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${selectedCategory === category.id ? 'bg-[#fbbf24] text-[#0a0a0a] font-medium' : 'bg-[#111111] text-white/50 border border-white/[0.06] hover:text-white/80'}`}>
               {category.name}
-            </option>
+            </button>
           ))}
-        </select>
+        </div>
       </div>
 
       {error && (
-        <div className="mt-4 bg-red-50 border border-red-200 rounded-md p-4">
-          <p className="text-red-800">{error}</p>
-        </div>
+        <div className="mb-4 bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-lg text-sm">{error}</div>
       )}
 
-      <div className="mt-8 flex flex-col">
-        <div className="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
-          <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
-            <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
-              <table className="min-w-full divide-y divide-gray-300">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Eveniment
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Categorie
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Descriere
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Imagini
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Status
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Data
-                    </th>
-                    <th className="relative px-6 py-3">
-                      <span className="sr-only">Acțiuni</span>
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {filteredEvents.map((event) => (
-                    <tr key={event.id}>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center">
-                          <div>
-                            <div className="text-sm font-medium text-gray-900">
-                              {event.name}
-                            </div>
-                            <div className="text-sm text-gray-500">
-                              /{event.slug}
-                            </div>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-purple-100 text-purple-800">
-                          {event.category?.name}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="text-sm text-gray-900">
-                          {event.description ?
-                            (event.description.length > 50 ?
-                              event.description.substring(0, 50) + '...' :
-                              event.description
-                            ) :
-                            '-'
-                          }
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {event.images?.length || 0}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <button
-                          onClick={() => toggleActive(event.id, event.isActive)}
-                          className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                            event.isActive
-                              ? 'bg-green-100 text-green-800'
-                              : 'bg-red-100 text-red-800'
-                          }`}
-                        >
-                          {event.isActive ? 'Activ' : 'Inactiv'}
-                        </button>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {event.date ?
-                          new Date(event.date).toLocaleDateString('ro-RO') :
-                          '-'
-                        }
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
-                        <Link
-                          href={`/admin/events/${event.id}/images`}
-                          className="text-blue-600 hover:text-blue-900"
-                        >
-                          Imagini
-                        </Link>
-                        <Link
-                          href={`/admin/events/${event.id}`}
-                          className="text-purple-600 hover:text-purple-900"
-                        >
-                          Editează
-                        </Link>
-                        <button
-                          onClick={() => handleDelete(event.id, event.name)}
-                          className="text-red-600 hover:text-red-900"
-                          disabled={event.images?.length ? event.images.length > 0 : false}
-                        >
-                          Șterge
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+      <div className="bg-[#111111] rounded-xl border border-white/[0.06] overflow-hidden">
+        <table className="w-full">
+          <thead>
+            <tr className="border-b border-white/[0.06]">
+              <th className="px-5 py-3 text-left text-xs font-medium text-white/30 uppercase tracking-wider">Eveniment</th>
+              <th className="px-5 py-3 text-left text-xs font-medium text-white/30 uppercase tracking-wider">Categorie</th>
+              <th className="px-5 py-3 text-left text-xs font-medium text-white/30 uppercase tracking-wider">Imagini</th>
+              <th className="px-5 py-3 text-left text-xs font-medium text-white/30 uppercase tracking-wider">Status</th>
+              <th className="px-5 py-3 text-left text-xs font-medium text-white/30 uppercase tracking-wider">Data</th>
+              <th className="px-5 py-3"></th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-white/[0.04]">
+            {filteredEvents.map((event) => (
+              <tr key={event.id} className="hover:bg-white/[0.02] transition-colors">
+                <td className="px-5 py-4">
+                  <p className="text-sm text-white/90 font-medium">{event.name}</p>
+                  <p className="text-xs text-white/30">/{event.slug}</p>
+                </td>
+                <td className="px-5 py-4">
+                  <span className="inline-flex px-2.5 py-1 text-xs font-medium rounded-full bg-[#fbbf24]/10 text-[#fbbf24]">
+                    {event.category?.name}
+                  </span>
+                </td>
+                <td className="px-5 py-4">
+                  <span className="text-sm text-white/60">{event.images?.length || 0}</span>
+                </td>
+                <td className="px-5 py-4">
+                  <button onClick={() => toggleActive(event.id, event.isActive)} className={`inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-full transition-colors ${event.isActive ? 'bg-emerald-500/10 text-emerald-400' : 'bg-red-500/10 text-red-400'}`}>
+                    <span className={`w-1.5 h-1.5 rounded-full ${event.isActive ? 'bg-emerald-400' : 'bg-red-400'}`}></span>
+                    {event.isActive ? 'Activ' : 'Inactiv'}
+                  </button>
+                </td>
+                <td className="px-5 py-4">
+                  <span className="text-sm text-white/50">{event.date ? new Date(event.date).toLocaleDateString('ro-RO') : '—'}</span>
+                </td>
+                <td className="px-5 py-4 text-right">
+                  <div className="flex items-center justify-end gap-3">
+                    <Link href={`/admin/events/${event.id}/images`} className="text-white/40 hover:text-blue-400 transition-colors" title="Imagini">
+                      <i className="fas fa-images text-xs"></i>
+                    </Link>
+                    <Link href={`/admin/events/${event.id}`} className="text-white/40 hover:text-[#fbbf24] transition-colors" title="Editează">
+                      <i className="fas fa-pen text-xs"></i>
+                    </Link>
+                    <button onClick={() => handleDelete(event.id, event.name)} disabled={event.images?.length ? event.images.length > 0 : false} className="text-white/40 hover:text-red-400 transition-colors disabled:opacity-20 disabled:cursor-not-allowed" title="Șterge">
+                      <i className="fas fa-trash text-xs"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
 
-              {filteredEvents.length === 0 && (
-                <div className="text-center py-12">
-                  <p className="text-gray-500">
-                    {selectedCategory === 'all'
-                      ? 'Nu există evenimente încă.'
-                      : 'Nu există evenimente pentru categoria selectată.'
-                    }
-                  </p>
-                  <Link
-                    href="/admin/events/new"
-                    className="mt-2 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-purple-600 bg-purple-100 hover:bg-purple-200"
-                  >
-                    Adaugă primul eveniment
-                  </Link>
-                </div>
-              )}
-            </div>
+        {filteredEvents.length === 0 && (
+          <div className="px-5 py-16 text-center">
+            <i className="fas fa-calendar-alt text-white/10 text-4xl mb-3"></i>
+            <p className="text-white/30 text-sm mb-3">{selectedCategory === 'all' ? 'Nu există evenimente încă' : 'Nu există evenimente pentru categoria selectată'}</p>
+            <Link href="/admin/events/new" className="text-[#fbbf24] text-sm hover:underline">Adaugă primul eveniment</Link>
           </div>
-        </div>
+        )}
       </div>
     </div>
   )

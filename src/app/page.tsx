@@ -2,34 +2,63 @@
 
 import CategoryViewModal from '@/components/CategoryViewModal'
 import AboutModal from '@/components/AboutModal'
-import { Category } from '@/types'
+import { Category, HeroSlide } from '@/types'
 import Image from 'next/image'
+import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import './styles.css'
 
+// Icoane profesionale Font Awesome per categorie (în loc de emoji)
+const categoryIcons: Record<string, string> = {
+  'nunta': 'fas fa-ring',
+  'botez': 'fas fa-baby',
+  'save-the-date': 'fas fa-heart',
+  'cuplu': 'fas fa-hand-holding-heart',
+  'familie': 'fas fa-users',
+  'trash-the-dress': 'fas fa-magic',
+  'absolvire': 'fas fa-graduation-cap',
+  'profesional': 'fas fa-briefcase',
+  'fotografii-amuzante': 'fas fa-theater-masks',
+}
+
+function CategoryIcon({ slug, fallbackIcon }: { slug: string; fallbackIcon?: string | null }) {
+  const iconClass = categoryIcons[slug]
+  if (iconClass) {
+    return <i className={iconClass}></i>
+  }
+  if (fallbackIcon) {
+    return <span>{fallbackIcon}</span>
+  }
+  return <i className="fa-solid fa-camera"></i>
+}
+
 export default function Home() {
   const [categories, setCategories] = useState<Category[]>([])
+  const [heroSlides, setHeroSlides] = useState<HeroSlide[]>([])
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null)
   const [loading, setLoading] = useState(true)
   const [isAboutModalOpen, setIsAboutModalOpen] = useState(false)
+  const [activeSlide, setActiveSlide] = useState(0)
+  const [sliderPaused, setSliderPaused] = useState(false)
 
-  // Fetch categories from API
+  // Fetch categories + hero slides from API
   useEffect(() => {
-    const fetchCategories = async () => {
+    const fetchData = async () => {
       try {
-        const response = await fetch('/api/categories')
-        if (response.ok) {
-          const data = await response.json()
-          setCategories(data)
-        }
+        const [catRes, heroRes] = await Promise.all([
+          fetch('/api/categories'),
+          fetch('/api/hero-slides'),
+        ])
+        if (catRes.ok) setCategories(await catRes.json())
+        if (heroRes.ok) setHeroSlides(await heroRes.json())
       } catch (error) {
-        console.error('Error fetching categories:', error)
+        console.error('Error fetching data:', error)
       } finally {
         setLoading(false)
       }
     }
 
-    fetchCategories()
+    fetchData()
   }, [])
 
   // Handle category card click
@@ -54,6 +83,44 @@ export default function Home() {
     setIsAboutModalOpen(false)
     document.body.style.overflow = 'auto'
   }
+
+  // Build slides from hero slides managed in admin
+  // First slide = photographer hero (always present), rest from admin hero slides
+  const fallbackSlide = {
+    url: '/assets/images/hero-image.png',
+    alt: 'Banciu Costin Photography',
+    title: '',
+    isHero: true
+  }
+
+  const heroSlidesFormatted = heroSlides.map(slide => ({
+    url: slide.url,
+    alt: slide.alt || '',
+    title: slide.title || '',
+    isHero: false
+  }))
+
+  const allSlides = heroSlidesFormatted.length > 0
+    ? [fallbackSlide, ...heroSlidesFormatted]
+    : [fallbackSlide]
+
+  // Navigare slider
+  const goToPrevSlide = () => {
+    setActiveSlide(prev => prev === 0 ? allSlides.length - 1 : prev - 1)
+  }
+
+  const goToNextSlide = () => {
+    setActiveSlide(prev => prev === allSlides.length - 1 ? 0 : prev + 1)
+  }
+
+  // Auto-play slider - 3 secunde
+  useEffect(() => {
+    if (sliderPaused || allSlides.length <= 1) return
+    const interval = setInterval(() => {
+      setActiveSlide(prev => prev === allSlides.length - 1 ? 0 : prev + 1)
+    }, 3000)
+    return () => clearInterval(interval)
+  }, [sliderPaused, allSlides.length])
 
   useEffect(() => {
     // Mobile menu toggle
@@ -120,14 +187,7 @@ export default function Home() {
         navbar?.classList.remove('scrolled')
       }
       
-      // Add parallax effect to hero section
-      const hero = document.querySelector('.hero')
-      const heroImage = document.querySelector('.hero-image img') as HTMLImageElement
-      
-      if (hero && heroImage) {
-        const scrollPercent = window.scrollY / window.innerHeight
-        heroImage.style.transform = `translateY(${scrollPercent * 50}px)`
-      }
+      // Parallax removed - using fullscreen slider now
     }
 
     window.addEventListener('scroll', handleScroll)
@@ -294,20 +354,11 @@ export default function Home() {
       {/* Fixed Navigation */}
       <nav className="navbar" id="navbar">
         <div className="nav-container">
-          {/* Premium 3D Logo */}
+          {/* Logo profesional */}
           <div className="nav-logo">
-            <div className="logo-3d">
-              <div className="logo-face logo-front">
-                <span>BC</span>
-                <i className="fas fa-camera logo-icon"></i>
-              </div>
-              <div className="logo-face logo-back">
-                <span>BC</span>
-              </div>
-              <div className="logo-face logo-right"></div>
-              <div className="logo-face logo-left"></div>
-              <div className="logo-face logo-top"></div>
-              <div className="logo-face logo-bottom"></div>
+            <div className="logo-mark">
+              <span className="logo-initials">BC</span>
+              <div className="logo-line"></div>
             </div>
             <div className="logo-text">
               <h2>Banciu Costin</h2>
@@ -346,173 +397,265 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* Hero Section */}
-      <section id="home" className="hero">
-        <div className="hero-content">
-          <div className="hero-text">
-            <h1>Banciu Costin</h1>
-            <p className="subtitle">F O T O G R A F </p>
-            <p className="hero-description">Surprind momente, creez amintiri</p>
-            {/* <button className="cta-button">
-              <span>Descoperă serviciile</span>
-              <i className="fas fa-arrow-right"></i>
-            </button> */}
+      {/* Hero Fullscreen Slider */}
+      <section
+        id="home"
+        className="hero-slider"
+        onMouseEnter={() => setSliderPaused(true)}
+        onMouseLeave={() => setSliderPaused(false)}
+      >
+        {/* Slides */}
+        {allSlides.map((slide, index) => (
+          <div
+            key={index}
+            className={`hero-slide ${index === activeSlide ? 'hero-slide-active' : ''}`}
+          >
+            <Image
+              src={slide.url}
+              alt={slide.alt}
+              fill
+              sizes="100vw"
+              quality={90}
+              priority={index === 0}
+              className="hero-slide-image"
+            />
+            <div className="hero-slide-overlay"></div>
           </div>
+        ))}
+
+        {/* Text overlay - doar pe hero slide */}
+        <div className={`hero-text-overlay ${activeSlide === 0 ? 'hero-text-visible' : ''}`}>
+          <h1>Banciu Costin</h1>
+          <p className="hero-subtitle-text">F O T O G R A F</p>
+          <p className="hero-tagline">Surprind momente, creez amintiri</p>
         </div>
-        <div className="hero-image">
-          <Image 
-            src="/assets/images/hero-image.png" 
-            alt="Banciu Costin Photography" 
-            width={1200} 
-            height={800}
-            quality={100}
-            priority={true}
-            sizes="(max-width: 768px) 100vw, 60vw"
-            style={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover'
-            }}
-          />
+
+        {/* Slide title - pe portfolio slides */}
+        {activeSlide > 0 && allSlides[activeSlide]?.title && (
+          <div className="hero-slide-label">
+            <span className="hero-slide-number">
+              {String(activeSlide).padStart(2, '0')}
+            </span>
+            <span className="hero-slide-catname">
+              {allSlides[activeSlide].title}
+            </span>
+          </div>
+        )}
+
+        {/* Right side indicators */}
+        <div className="hero-indicators">
+          {allSlides.slice(0, Math.min(allSlides.length, 10)).map((_, index) => (
+            <button
+              key={index}
+              className={`hero-indicator ${index === activeSlide ? 'hero-indicator-active' : ''}`}
+              onClick={() => setActiveSlide(index)}
+            />
+          ))}
         </div>
-        <div className="hero-overlay"></div>
+
+        {/* Navigation arrows */}
+        <button className="hero-nav hero-nav-prev" onClick={goToPrevSlide}>
+          <i className="fas fa-chevron-left"></i>
+        </button>
+        <button className="hero-nav hero-nav-next" onClick={goToNextSlide}>
+          <i className="fas fa-chevron-right"></i>
+        </button>
+
+        {/* Scroll hint */}
+        <div className="hero-scroll-hint">
+          <div className="hero-scroll-line"></div>
+        </div>
       </section>
 
-      {/* Services Section */}
-      <section id="servicii" className="services">
-        <div className="services-background">
-          <div className="bg-element bg-element-1"></div>
-          <div className="bg-element bg-element-2"></div>
-          <div className="bg-element bg-element-3"></div>
-          <div className="bg-pattern"></div>
+      {/* Stats Band */}
+      <section className="stats-band">
+        <div className="stats-inner">
+          <div className="stat-item">
+            <span className="stat-number">500+</span>
+            <span className="stat-label">Evenimente</span>
+          </div>
+          <div className="stat-divider"></div>
+          <div className="stat-item">
+            <span className="stat-number">8</span>
+            <span className="stat-label">Ani Experiență</span>
+          </div>
+          <div className="stat-divider"></div>
+          <div className="stat-item">
+            <span className="stat-number">1000+</span>
+            <span className="stat-label">Clienți Fericiți</span>
+          </div>
+          <div className="stat-divider"></div>
+          <div className="stat-item">
+            <span className="stat-number">50k+</span>
+            <span className="stat-label">Fotografii Livrate</span>
+          </div>
         </div>
-        
-        <div className="container">
-          <h2 className="section-title">Serviciile Mele</h2>
-          <p className="section-subtitle">Fiecare moment are povestea lui. Lasă-mă să o surprind pentru tine.</p>
-          
-          {loading ? (
-            <div className="flex justify-center items-center py-20">
-              <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-purple-600"></div>
-            </div>
-          ) : categories.length > 0 ? (
-            <div className="service-grid">
-              {categories.map((category) => {
-                // Get first image from first event for preview
-                const previewImage = category.events?.[0]?.images?.[0]
-                const truncatedDescription = category.description 
-                  ? category.description.length > 120 
-                    ? category.description.substring(0, 120) + '...' 
-                    : category.description
-                  : ''
+      </section>
 
-                return (
-                  <div key={category.id} className="service-card" data-service={category.slug}>
-                    <div className="card-inner">
-                      <div className="card-front">
-                        {category.icon && <div className="service-icon">{category.icon}</div>}
-                        <h3>{category.name}</h3>
-                        {category.subtitle && <h4>{category.subtitle}</h4>}
-                        <p>{truncatedDescription}</p>
-                        <div className="card-hint">
-                          <i className="fas fa-camera"></i>
-                          <span>Hover pentru preview</span>
-                        </div>
-                      </div>
-                      <div className="card-back">
-                        {previewImage ? (
-                          <Image 
-                            src={previewImage.thumbnailUrl || previewImage.url} 
-                            alt={category.name} 
-                            width={600} 
-                            height={400} 
-                            className="object-cover w-full h-full"
-                          />
-                        ) : (
-                          <div className="w-full h-full bg-gradient-to-br from-purple-400 to-indigo-600 flex items-center justify-center">
-                            {category.icon && <span className="text-8xl opacity-30">{category.icon}</span>}
-                          </div>
-                        )}
-                        <div className="card-overlay">
-                          <h3>{category.name}</h3>
-                          {category.subtitle && <p>{category.subtitle}</p>}
-                          <button 
-                            className="view-gallery-btn" 
-                            onClick={() => handleCategoryClick(category)}
-                          >
-                            <i className="fas fa-camera"></i>
-                            <span>Vezi galeria →</span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
+      {/* Mosaic Gallery */}
+      <section className="mosaic-section">
+        <div className="mosaic-header">
+          <span className="mosaic-label">Portofoliu</span>
+          <h2 className="mosaic-title">Momente care rămân</h2>
+          <p className="mosaic-subtitle">O selecție din cele mai frumoase povești surprinse prin obiectiv</p>
+        </div>
+        {(() => {
+          const mosaicImages = categories.flatMap(cat =>
+            (cat.events || []).flatMap(event =>
+              (event.images || []).map(img => ({
+                url: img.url,
+                alt: img.alt || cat.name,
+                category: cat.name,
+              }))
+            )
+          ).slice(0, 8)
+
+          return mosaicImages.length > 0 ? (
+            <div className="mosaic-grid">
+              {mosaicImages.map((img, i) => (
+                <div key={i} className={`mosaic-item mosaic-item-${i + 1}`}>
+                  <Image
+                    src={img.url}
+                    alt={img.alt}
+                    fill
+                    sizes="(max-width: 768px) 50vw, 33vw"
+                    className="mosaic-image"
+                  />
+                  <div className="mosaic-overlay">
+                    <span className="mosaic-cat">{img.category}</span>
                   </div>
-                )
-              })}
+                </div>
+              ))}
             </div>
           ) : (
-            <div className="text-center py-20">
-              <p className="text-gray-600 text-lg">Serviciile vor fi disponibile în curând.</p>
+            <div className="mosaic-empty">
+              <p>Galeria va fi disponibilă în curând</p>
             </div>
-          )}
+          )
+        })()}
+        <div className="mosaic-cta">
+          <Link href="/portofoliu" className="mosaic-btn">
+            <span>Vezi tot portofoliul</span>
+            <i className="fas fa-arrow-right"></i>
+          </Link>
         </div>
       </section>
 
       {/* Contact Section */}
-      <section id="contact" className="contact">
-        <div className="container">
-          <h2 className="section-title">Să creăm împreună amintiri</h2>
-          <p className="section-subtitle">Fiecare poveste merită să fie spusă frumos. <br />Spune-mi povestea ta.</p>
-          
-          <div className="contact-content">
-            <div className="contact-info">
-              <h3>Banciu Costin</h3>
-              <p>Fotograf Profesionist</p>
-              <div className="contact-details">
-                <div className="contact-item">
-                  <div className="contact-icon">
-                    <i className="fas fa-phone"></i>
-                  </div>
-                  <a href="tel:+40753110407">+40 753 110 407</a>
+      <section id="contact" className="ct">
+        {/* Background elements */}
+        <div className="ct-bg">
+          <div className="ct-bg-glow"></div>
+          <div className="ct-bg-grid"></div>
+        </div>
+
+        <div className="ct-inner">
+          {/* Header */}
+          <div className="ct-header">
+            <span className="ct-label">Contact</span>
+            <h2 className="ct-title">Hai să vorbim</h2>
+            <p className="ct-subtitle">Fiecare poveste merită să fie spusă frumos. Spune-mi povestea ta.</p>
+          </div>
+
+          <div className="ct-layout">
+            {/* Left - Contact Cards */}
+            <div className="ct-cards">
+              <a href="tel:+40753110407" className="ct-card">
+                <div className="ct-card-icon ct-card-icon-phone">
+                  <i className="fas fa-phone-alt"></i>
                 </div>
-                <div className="contact-item">
-                  <div className="contact-icon">
-                    <i className="fab fa-whatsapp"></i>
-                  </div>
-                  <a href="https://wa.me/40753110407" target="_blank" rel="noopener noreferrer">+40 753 110 407 (WhatsApp)</a>
+                <div className="ct-card-text">
+                  <span className="ct-card-label">Telefon</span>
+                  <span className="ct-card-value">+40 753 110 407</span>
                 </div>
-                <div className="contact-item">
-                  <div className="contact-icon">
-                    <i className="fas fa-envelope"></i>
-                  </div>
-                  <a href="mailto:costinfoto@gmail.com">costinfoto@gmail.com</a>
+                <i className="fas fa-arrow-right ct-card-arrow"></i>
+              </a>
+
+              <a href="https://wa.me/40753110407" target="_blank" rel="noopener noreferrer" className="ct-card">
+                <div className="ct-card-icon ct-card-icon-whatsapp">
+                  <i className="fab fa-whatsapp"></i>
                 </div>
-                <div className="contact-item">
-                  <div className="contact-icon">
-                    <i className="fas fa-map-marker-alt"></i>
-                  </div>
-                  <span>Constanta, Romania</span>
+                <div className="ct-card-text">
+                  <span className="ct-card-label">WhatsApp</span>
+                  <span className="ct-card-value">Scrie-mi direct</span>
+                </div>
+                <i className="fas fa-arrow-right ct-card-arrow"></i>
+              </a>
+
+              <a href="mailto:costinfoto@gmail.com" className="ct-card">
+                <div className="ct-card-icon ct-card-icon-email">
+                  <i className="fas fa-envelope"></i>
+                </div>
+                <div className="ct-card-text">
+                  <span className="ct-card-label">Email</span>
+                  <span className="ct-card-value">costinfoto@gmail.com</span>
+                </div>
+                <i className="fas fa-arrow-right ct-card-arrow"></i>
+              </a>
+
+              <div className="ct-card ct-card-location">
+                <div className="ct-card-icon ct-card-icon-location">
+                  <i className="fas fa-map-marker-alt"></i>
+                </div>
+                <div className="ct-card-text">
+                  <span className="ct-card-label">Locație</span>
+                  <span className="ct-card-value">Constanța, România</span>
                 </div>
               </div>
+
+              {/* Social links */}
+              <div className="ct-socials">
+                <a href="https://www.facebook.com/CostinBanciuPhotography" target="_blank" rel="noopener noreferrer" className="ct-social">
+                  <i className="fab fa-facebook-f"></i>
+                </a>
+                <a href="#" className="ct-social">
+                  <i className="fab fa-instagram"></i>
+                </a>
+                <a href="https://wa.me/40753110407" target="_blank" rel="noopener noreferrer" className="ct-social">
+                  <i className="fab fa-whatsapp"></i>
+                </a>
+              </div>
             </div>
-            
-            <div className="contact-form">
-              <form id="contact-form">
-                <div className="form-row">
-                  <input type="text" name="name" placeholder="Numele tău" required />
-                  <input type="email" name="email" placeholder="Email" required />
+
+            {/* Right - Form */}
+            <div className="ct-form-wrap">
+              <div className="ct-form-header">
+                <h3>Trimite un mesaj</h3>
+                <p>Completează formularul și voi reveni cu un răspuns cât mai curând</p>
+              </div>
+              <form id="contact-form" className="ct-form">
+                <div className="ct-form-row">
+                  <div className="ct-field">
+                    <label>Nume *</label>
+                    <input type="text" name="name" placeholder="Numele tău complet" required />
+                  </div>
+                  <div className="ct-field">
+                    <label>Email *</label>
+                    <input type="email" name="email" placeholder="email@exemplu.com" required />
+                  </div>
                 </div>
-                <input type="tel" name="phone" placeholder="Telefon" required />
-                <select name="service" required>
-                  <option value="">Selectează serviciul</option>
-                  {categories.map((category) => (
-                    <option key={category.id} value={category.slug}>
-                      {category.name}
-                    </option>
-                  ))}
-                </select>
-                <textarea name="message" placeholder="Spune-mi despre evenimentul tău..." rows={5}></textarea>
-                <button type="submit" className="submit-btn">
+                <div className="ct-form-row">
+                  <div className="ct-field">
+                    <label>Telefon *</label>
+                    <input type="tel" name="phone" placeholder="+40 7XX XXX XXX" required />
+                  </div>
+                  <div className="ct-field">
+                    <label>Serviciu *</label>
+                    <select name="service" required>
+                      <option value="">Alege tipul evenimentului</option>
+                      {categories.map((category) => (
+                        <option key={category.id} value={category.slug}>
+                          {category.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+                <div className="ct-field">
+                  <label>Mesaj</label>
+                  <textarea name="message" placeholder="Povestește-mi despre evenimentul tău - dată, locație, ce îți dorești..." rows={5}></textarea>
+                </div>
+                <button type="submit" className="ct-submit">
                   <span>Trimite mesajul</span>
                   <i className="fas fa-paper-plane"></i>
                 </button>
@@ -537,9 +680,25 @@ export default function Home() {
       />
 
       {/* Footer */}
-      <footer className="footer">
-        <div className="container">
-          <p>&copy; 2025 Banciu Costin Photography. Toate drepturile rezervate.</p>
+      <footer className="ft">
+        <div className="ft-inner">
+          <div className="ft-brand">
+            <div className="ft-logo">
+              <span className="ft-initials">BC</span>
+              <div className="ft-logo-line"></div>
+            </div>
+            <p className="ft-tagline">Surprind momente, creez amintiri</p>
+          </div>
+          <div className="ft-links">
+            <a href="#home">Acasă</a>
+            <a href="#portofoliu" onClick={() => { window.location.href = '/portofoliu' }}>Portofoliu</a>
+            <a href="#despre" onClick={(e) => { e.preventDefault(); openAboutModal() }}>Despre</a>
+            <a href="#contact">Contact</a>
+          </div>
+          <div className="ft-copy">
+            <p>&copy; {new Date().getFullYear()} Banciu Costin Photography</p>
+            <p className="ft-copy-sub">Toate drepturile rezervate</p>
+          </div>
         </div>
       </footer>
     </>
