@@ -11,7 +11,7 @@ export default function AboutModal({ isOpen, onClose }: AboutModalProps) {
   if (!isOpen) return null
 
   return (
-    <div 
+    <div
       style={{
         position: 'fixed',
         top: 0,
@@ -19,80 +19,127 @@ export default function AboutModal({ isOpen, onClose }: AboutModalProps) {
         right: 0,
         bottom: 0,
         zIndex: 4000,
-        backgroundColor: 'rgba(0, 0, 0, 0.8)',
-        backdropFilter: 'blur(8px)',
+        backgroundColor: 'rgba(0, 0, 0, 0.85)',
+        backdropFilter: 'blur(12px)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: '2rem'
+        padding: '2rem',
+        animation: 'fadeIn 0.3s ease'
       }}
       onClick={onClose}
     >
-      <div 
+      <style jsx>{`
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        @keyframes slideUp {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @media (max-width: 768px) {
+          .about-grid {
+            grid-template-columns: 1fr !important;
+            text-align: center;
+          }
+          .about-image-wrap {
+            max-width: 250px;
+            margin: 0 auto;
+          }
+        }
+      `}</style>
+      <div
         style={{
-          backgroundColor: 'white',
+          backgroundColor: '#0a0a0a',
           borderRadius: '20px',
           maxWidth: '800px',
           width: '100%',
           maxHeight: '90vh',
           overflow: 'auto',
           position: 'relative',
-          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)'
+          boxShadow: '0 25px 60px rgba(0, 0, 0, 0.5)',
+          border: '1px solid rgba(255,255,255,0.06)',
+          animation: 'slideUp 0.4s ease'
         }}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header cu buton close */}
+        {/* Header */}
         <div style={{
           position: 'sticky',
           top: 0,
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          background: 'linear-gradient(135deg, rgba(251,191,36,0.15) 0%, rgba(245,158,11,0.08) 100%)',
+          borderBottom: '1px solid rgba(251,191,36,0.15)',
           color: 'white',
-          padding: '2rem',
+          padding: '1.5rem 2rem',
           borderRadius: '20px 20px 0 0',
           display: 'flex',
           justifyContent: 'space-between',
-          alignItems: 'center'
+          alignItems: 'center',
+          backdropFilter: 'blur(20px)',
+          zIndex: 10
         }}>
-          <h2 style={{ fontSize: '2rem', fontWeight: 'bold', margin: 0 }}>
-            Despre Mine
-          </h2>
+          <div>
+            <h2 style={{
+              fontSize: '1.8rem',
+              fontWeight: 300,
+              margin: 0,
+              fontFamily: "'Playfair Display', serif"
+            }}>
+              Despre Mine
+            </h2>
+            <div style={{
+              width: '40px',
+              height: '2px',
+              background: 'linear-gradient(90deg, #fbbf24, transparent)',
+              marginTop: '0.5rem'
+            }}></div>
+          </div>
           <button
             onClick={onClose}
             style={{
-              background: 'rgba(255, 255, 255, 0.2)',
-              border: 'none',
+              background: 'rgba(255, 255, 255, 0.05)',
+              border: '1px solid rgba(255,255,255,0.1)',
               borderRadius: '50%',
               width: '40px',
               height: '40px',
-              color: 'white',
+              color: 'rgba(255,255,255,0.6)',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               fontSize: '1.2rem',
-              transition: 'background 0.3s ease'
+              transition: 'all 0.3s ease'
             }}
-            onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.3)'}
-            onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.2)'}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = 'rgba(251,191,36,0.1)'
+              e.currentTarget.style.borderColor = 'rgba(251,191,36,0.3)'
+              e.currentTarget.style.color = '#fbbf24'
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)'
+              e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'
+              e.currentTarget.style.color = 'rgba(255,255,255,0.6)'
+            }}
           >
-            ✕
+            <i className="fas fa-times"></i>
           </button>
         </div>
 
         {/* Content */}
         <div style={{ padding: '2rem' }}>
-          <div style={{
+          <div className="about-grid" style={{
             display: 'grid',
             gridTemplateColumns: '1fr 2fr',
             gap: '2rem',
             alignItems: 'start'
           }}>
-            {/* Poza ta */}
-            <div style={{
+            {/* Poza */}
+            <div className="about-image-wrap" style={{
               position: 'relative',
               borderRadius: '15px',
               overflow: 'hidden',
-              boxShadow: '0 10px 30px rgba(0, 0, 0, 0.2)'
+              border: '1px solid rgba(255,255,255,0.06)'
             }}>
               <Image
                 src="/assets/images/despre-mine.jpg"
@@ -104,105 +151,117 @@ export default function AboutModal({ isOpen, onClose }: AboutModalProps) {
                   width: '100%',
                   height: 'auto',
                   objectFit: 'cover',
-                  filter: 'grayscale(100%)'
+                  filter: 'grayscale(60%) contrast(1.1)',
+                  transition: 'filter 0.5s ease'
                 }}
+                onMouseEnter={(e) => e.currentTarget.style.filter = 'grayscale(0%) contrast(1)'}
+                onMouseLeave={(e) => e.currentTarget.style.filter = 'grayscale(60%) contrast(1.1)'}
               />
             </div>
 
-            {/* Detalii despre tine */}
-            <div style={{ color: '#374151' }}>
+            {/* Detalii */}
+            <div style={{ color: 'rgba(255,255,255,0.7)' }}>
               <h3 style={{
                 fontSize: '1.5rem',
-                fontWeight: '600',
-                marginBottom: '1rem',
-                color: '#111827'
+                fontWeight: 300,
+                marginBottom: '0.5rem',
+                color: 'white',
+                fontFamily: "'Playfair Display', serif"
               }}>
                 Banciu Costin
               </h3>
-              
+
               <p style={{
-                fontSize: '1.1rem',
-                fontWeight: '500',
-                color: '#6366f1',
-                marginBottom: '1.5rem'
+                fontSize: '0.85rem',
+                fontWeight: 400,
+                color: '#fbbf24',
+                marginBottom: '1.5rem',
+                letterSpacing: '0.15em',
+                textTransform: 'uppercase'
               }}>
                 Fotograf Profesionist
               </p>
 
-              <div style={{ lineHeight: '1.8', fontSize: '1rem' }}>
-                <p style={{ marginBottom: '1.5rem' }}>
-                  Bună! Sunt Costin și sunt pasionat de fotografie de peste <strong>10 ani</strong>. 
-                  Specializarea mea principală este fotografia de evenimente - nunți, botezuri, 
+              <div style={{ lineHeight: '1.8', fontSize: '0.95rem' }}>
+                <p style={{ marginBottom: '1.25rem' }}>
+                  Bună! Sunt Costin și sunt pasionat de fotografie de peste <strong style={{ color: '#fbbf24' }}>10 ani</strong>.
+                  Specializarea mea principală este fotografia de evenimente - nunți, botezuri,
                   și momente speciale din viața oamenilor.
                 </p>
 
-                <p style={{ marginBottom: '1.5rem' }}>
-                  Cred că fiecare moment are povestea lui unică și rolul meu este să surprind 
+                <p style={{ marginBottom: '1.25rem' }}>
+                  Cred că fiecare moment are povestea lui unică și rolul meu este să surprind
                   emoțiile autentice, zâmbetele sincere și gesturile care vorbesc despre dragoste.
                 </p>
 
-                <p style={{ marginBottom: '1.5rem' }}>
-                  Am avut privilegiul să documentez peste <strong>200 de nunți</strong> și 
+                <p style={{ marginBottom: '1.25rem' }}>
+                  Am avut privilegiul să documentez peste <strong style={{ color: '#fbbf24' }}>200 de nunți</strong> și
                   sute de alte evenimente speciale, fiecare cu propria sa magie și unicitate.
                 </p>
 
-                {/* Detalii de contact */}
+                {/* Contact box */}
                 <div style={{
-                  background: '#f8fafc',
-                  padding: '1.5rem',
-                  borderRadius: '10px',
-                  marginTop: '2rem'
+                  background: 'rgba(251,191,36,0.05)',
+                  border: '1px solid rgba(251,191,36,0.1)',
+                  padding: '1.25rem',
+                  borderRadius: '12px',
+                  marginTop: '1.5rem'
                 }}>
                   <h4 style={{
-                    fontSize: '1.1rem',
-                    fontWeight: '600',
-                    marginBottom: '1rem',
-                    color: '#111827'
+                    fontSize: '0.9rem',
+                    fontWeight: 500,
+                    marginBottom: '0.75rem',
+                    color: 'rgba(255,255,255,0.8)',
+                    letterSpacing: '0.05em'
                   }}>
                     Să vorbim despre proiectul tău:
                   </h4>
-                  
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                      <span style={{ color: '#6366f1' }}>📧</span>
-                      <a href="mailto:costinfoto@gmail.com" style={{ color: '#6366f1', textDecoration: 'none' }}>
-                        costinfoto@gmail.com
-                      </a>
-                    </div>
-                    
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                      <span style={{ color: '#6366f1' }}>📱</span>
-                      <a href="tel:+40753110407" style={{ color: '#6366f1', textDecoration: 'none' }}>
-                        +40 753 110 407
-                      </a>
-                    </div>
-                    
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                      <span style={{ color: '#6366f1' }}>💬</span>
-                      <a 
-                        href="https://wa.me/40753110407" 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        style={{ color: '#6366f1', textDecoration: 'none' }}
-                      >
-                        WhatsApp
-                      </a>
-                    </div>
+
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+                    <a href="mailto:costinfoto@gmail.com" style={{
+                      display: 'flex', alignItems: 'center', gap: '0.75rem',
+                      color: 'rgba(255,255,255,0.5)', textDecoration: 'none',
+                      fontSize: '0.9rem', transition: 'color 0.3s ease'
+                    }}
+                    onMouseEnter={(e) => e.currentTarget.style.color = '#fbbf24'}
+                    onMouseLeave={(e) => e.currentTarget.style.color = 'rgba(255,255,255,0.5)'}
+                    >
+                      <i className="fas fa-envelope" style={{ color: '#fbbf24', width: '16px' }}></i>
+                      costinfoto@gmail.com
+                    </a>
+
+                    <a href="tel:+40753110407" style={{
+                      display: 'flex', alignItems: 'center', gap: '0.75rem',
+                      color: 'rgba(255,255,255,0.5)', textDecoration: 'none',
+                      fontSize: '0.9rem', transition: 'color 0.3s ease'
+                    }}
+                    onMouseEnter={(e) => e.currentTarget.style.color = '#fbbf24'}
+                    onMouseLeave={(e) => e.currentTarget.style.color = 'rgba(255,255,255,0.5)'}
+                    >
+                      <i className="fas fa-phone" style={{ color: '#fbbf24', width: '16px' }}></i>
+                      +40 753 110 407
+                    </a>
+
+                    <a
+                      href="https://wa.me/40753110407"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{
+                        display: 'flex', alignItems: 'center', gap: '0.75rem',
+                        color: 'rgba(255,255,255,0.5)', textDecoration: 'none',
+                        fontSize: '0.9rem', transition: 'color 0.3s ease'
+                      }}
+                      onMouseEnter={(e) => e.currentTarget.style.color = '#fbbf24'}
+                      onMouseLeave={(e) => e.currentTarget.style.color = 'rgba(255,255,255,0.5)'}
+                    >
+                      <i className="fab fa-whatsapp" style={{ color: '#fbbf24', width: '16px' }}></i>
+                      WhatsApp
+                    </a>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-
-          {/* Mobile responsive */}
-          <style jsx>{`
-            @media (max-width: 768px) {
-              .about-content {
-                grid-template-columns: 1fr !important;
-                text-align: center;
-              }
-            }
-          `}</style>
         </div>
       </div>
     </div>

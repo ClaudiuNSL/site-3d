@@ -176,6 +176,16 @@ export default function AdminDashboard() {
               </div>
               <i className="fas fa-chevron-right dash-action-arrow"></i>
             </Link>
+            <Link href="/admin/showreel" className="dash-action">
+              <div className="dash-action-icon dash-action-icon-purple">
+                <i className="fas fa-video"></i>
+              </div>
+              <div>
+                <span className="dash-action-title">Video Showreel</span>
+                <span className="dash-action-desc">Gestionează videoclipul de pe homepage</span>
+              </div>
+              <i className="fas fa-chevron-right dash-action-arrow"></i>
+            </Link>
             <a href="/" target="_blank" rel="noopener noreferrer" className="dash-action">
               <div className="dash-action-icon dash-action-icon-green">
                 <i className="fas fa-external-link-alt"></i>

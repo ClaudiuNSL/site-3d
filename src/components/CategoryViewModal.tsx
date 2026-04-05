@@ -25,7 +25,17 @@ export default function CategoryViewModal({ category, onClose }: CategoryViewMod
 
   return (
     <>
-      <div 
+      <style jsx>{`
+        @keyframes modalFadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        @keyframes modalSlideUp {
+          from { opacity: 0; transform: translateY(20px) scale(0.98); }
+          to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+      `}</style>
+      <div
         style={{
           position: 'fixed',
           top: 0,
@@ -33,12 +43,13 @@ export default function CategoryViewModal({ category, onClose }: CategoryViewMod
           right: 0,
           bottom: 0,
           zIndex: 3000,
-          backgroundColor: 'rgba(0, 0, 0, 0.7)',
-          backdropFilter: 'blur(4px)'
-        }} 
+          backgroundColor: 'rgba(0, 0, 0, 0.85)',
+          backdropFilter: 'blur(12px)',
+          animation: 'modalFadeIn 0.3s ease'
+        }}
         onClick={onClose}
       >
-        <div 
+        <div
           style={{
             position: 'fixed',
             top: '1rem',
@@ -46,38 +57,47 @@ export default function CategoryViewModal({ category, onClose }: CategoryViewMod
             right: '1rem',
             bottom: '1rem',
             zIndex: 3001,
-            backgroundColor: 'white',
+            backgroundColor: '#0a0a0a',
             borderRadius: '1rem',
-            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+            boxShadow: '0 25px 60px rgba(0, 0, 0, 0.5)',
+            border: '1px solid rgba(255,255,255,0.06)',
             overflow: 'hidden',
             display: 'flex',
-            flexDirection: 'column'
+            flexDirection: 'column',
+            animation: 'modalSlideUp 0.4s ease'
           }}
           onClick={(e) => e.stopPropagation()}
         >
-          {/* Header */}
-          <div 
+          {/* Header - Gold theme */}
+          <div
             style={{
-              background: 'linear-gradient(to right, #9333ea, #7c3aed)',
+              background: 'linear-gradient(135deg, rgba(251,191,36,0.12) 0%, rgba(245,158,11,0.06) 100%)',
+              borderBottom: '1px solid rgba(251,191,36,0.12)',
               color: 'white',
-              padding: '1rem 1.5rem',
+              padding: '1.25rem 1.5rem',
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center'
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-              {category.icon && <span style={{ fontSize: '2.5rem' }}>{category.icon}</span>}
+              {category.icon && <span style={{ fontSize: '2rem' }}>{category.icon}</span>}
               <div>
-                <h2 style={{ fontSize: '1.875rem', fontWeight: 'bold', margin: 0 }}>
+                <h2 style={{
+                  fontSize: '1.6rem',
+                  fontWeight: 300,
+                  margin: 0,
+                  fontFamily: "'Playfair Display', serif"
+                }}>
                   {category.name}
                 </h2>
                 {category.subtitle && (
-                  <p style={{ 
-                    color: '#e9d5ff', 
-                    fontSize: '0.875rem', 
+                  <p style={{
+                    color: 'rgba(251,191,36,0.6)',
+                    fontSize: '0.8rem',
                     margin: 0,
-                    marginTop: '0.25rem'
+                    marginTop: '0.25rem',
+                    letterSpacing: '0.05em'
                   }}>
                     {category.subtitle}
                   </p>
@@ -91,22 +111,28 @@ export default function CategoryViewModal({ category, onClose }: CategoryViewMod
                 width: '2.5rem',
                 height: '2.5rem',
                 borderRadius: '50%',
-                backgroundColor: 'rgba(255, 255, 255, 0.2)',
-                border: 'none',
-                color: 'white',
+                backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                border: '1px solid rgba(255,255,255,0.1)',
+                color: 'rgba(255,255,255,0.5)',
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                transition: 'background-color 0.2s'
+                transition: 'all 0.3s ease'
               }}
-              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.3)'}
-              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.2)'}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = 'rgba(251,191,36,0.1)'
+                e.currentTarget.style.borderColor = 'rgba(251,191,36,0.3)'
+                e.currentTarget.style.color = '#fbbf24'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.05)'
+                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'
+                e.currentTarget.style.color = 'rgba(255,255,255,0.5)'
+              }}
               aria-label="Close"
             >
-              <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
+              <i className="fas fa-times"></i>
             </button>
           </div>
 
@@ -114,14 +140,15 @@ export default function CategoryViewModal({ category, onClose }: CategoryViewMod
           <div style={{ flex: 1, overflowY: 'auto', padding: '1.5rem' }}>
             {category.description && (
               <p style={{
-                fontSize: '1.25rem',
-                fontWeight: 500,
+                fontSize: '1.1rem',
+                fontWeight: 300,
                 marginBottom: '2rem',
                 fontStyle: 'italic',
-                padding: '1.5rem 2.5rem',
+                padding: '1rem 2rem',
                 textAlign: 'center',
-                color: '#6b7280',
-                lineHeight: '1.6'
+                color: 'rgba(255,255,255,0.4)',
+                lineHeight: '1.6',
+                fontFamily: "'Playfair Display', serif"
               }}>
                 {category.description}
               </p>
@@ -130,20 +157,22 @@ export default function CategoryViewModal({ category, onClose }: CategoryViewMod
             {category.events && category.events.length > 0 ? (
               <>
                 <h3 style={{
-                  fontSize: '1.5rem',
-                  fontWeight: '600',
-                  color: '#111827',
+                  fontSize: '1rem',
+                  fontWeight: 400,
+                  color: 'rgba(255,255,255,0.4)',
                   marginBottom: '1.5rem',
-                  textAlign: 'center'
+                  textAlign: 'center',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.15em'
                 }}>
-                  Evenimente disponibile ({category.events.length})
+                  Evenimente ({category.events.length})
                 </h3>
-                <div 
+                <div
                   style={{
                     display: 'flex',
                     flexWrap: 'wrap',
-                    gap: '1.5rem',
-                    padding: '0 1rem',
+                    gap: '1.25rem',
+                    padding: '0 0.5rem',
                     justifyContent: 'center'
                   }}
                 >
@@ -153,28 +182,29 @@ export default function CategoryViewModal({ category, onClose }: CategoryViewMod
                       onClick={() => handleEventClick(event)}
                       style={{
                         cursor: 'pointer',
-                        backgroundColor: 'white',
-                        borderRadius: '0.75rem',
-                        border: '2px solid #e5e7eb',
+                        backgroundColor: 'rgba(255,255,255,0.02)',
+                        borderRadius: '12px',
+                        border: '1px solid rgba(255,255,255,0.06)',
                         overflow: 'hidden',
                         transition: 'all 0.3s ease',
-                        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-                        width: '300px',
+                        width: '280px',
                         maxWidth: '100%'
                       }}
                       onMouseEnter={(e) => {
-                        e.currentTarget.style.borderColor = '#a855f7'
-                        e.currentTarget.style.boxShadow = '0 10px 15px -3px rgba(0, 0, 0, 0.1)'
+                        e.currentTarget.style.borderColor = 'rgba(251,191,36,0.2)'
+                        e.currentTarget.style.background = 'rgba(251,191,36,0.03)'
+                        e.currentTarget.style.transform = 'translateY(-4px)'
                       }}
                       onMouseLeave={(e) => {
-                        e.currentTarget.style.borderColor = '#e5e7eb'
-                        e.currentTarget.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                        e.currentTarget.style.borderColor = 'rgba(255,255,255,0.06)'
+                        e.currentTarget.style.background = 'rgba(255,255,255,0.02)'
+                        e.currentTarget.style.transform = 'translateY(0)'
                       }}
                     >
                       {event.images && event.images.length > 0 && (
                         <div style={{
                           aspectRatio: '16/9',
-                          backgroundColor: '#f3f4f6',
+                          backgroundColor: '#111',
                           overflow: 'hidden'
                         }}>
                           <Image
@@ -184,32 +214,29 @@ export default function CategoryViewModal({ category, onClose }: CategoryViewMod
                               width: '100%',
                               height: '100%',
                               objectFit: 'cover',
-                              transition: 'transform 0.3s ease'
+                              transition: 'transform 0.5s ease'
                             }}
                             width={300}
                             height={169}
-                            onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+                            onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.08)'}
                             onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
                           />
                         </div>
                       )}
                       <div style={{ padding: '1rem' }}>
                         <h4 style={{
-                          fontWeight: '600',
-                          color: '#111827',
-                          marginBottom: '0.5rem',
-                          fontSize: '1.125rem',
-                          transition: 'color 0.3s ease'
-                        }}
-                        onMouseEnter={(e) => e.currentTarget.style.color = '#9333ea'}
-                        onMouseLeave={(e) => e.currentTarget.style.color = '#111827'}
-                        >
+                          fontWeight: 400,
+                          color: 'white',
+                          marginBottom: '0.4rem',
+                          fontSize: '1rem',
+                          fontFamily: "'Playfair Display', serif"
+                        }}>
                           {event.name}
                         </h4>
                         {event.description && (
                           <p style={{
-                            fontSize: '0.875rem',
-                            color: '#6b7280',
+                            fontSize: '0.8rem',
+                            color: 'rgba(255,255,255,0.35)',
                             lineHeight: '1.5',
                             display: '-webkit-box',
                             WebkitLineClamp: 2,
@@ -224,19 +251,17 @@ export default function CategoryViewModal({ category, onClose }: CategoryViewMod
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'space-between',
-                          fontSize: '0.875rem'
+                          fontSize: '0.8rem'
                         }}>
-                          <span style={{ color: '#6b7280' }}>
+                          <span style={{ color: 'rgba(255,255,255,0.25)' }}>
                             {event.images?.length || 0} fotografii
                           </span>
                           <span style={{
-                            color: '#9333ea',
-                            fontWeight: '500',
-                            transition: 'transform 0.3s ease'
-                          }}
-                          onMouseEnter={(e) => e.currentTarget.style.transform = 'translateX(4px)'}
-                          onMouseLeave={(e) => e.currentTarget.style.transform = 'translateX(0)'}
-                          >
+                            color: '#fbbf24',
+                            fontWeight: 400,
+                            fontSize: '0.75rem',
+                            letterSpacing: '0.05em'
+                          }}>
                             Vezi galeria →
                           </span>
                         </div>
@@ -258,34 +283,33 @@ export default function CategoryViewModal({ category, onClose }: CategoryViewMod
                   margin: '0 auto',
                   padding: '0 1.5rem'
                 }}>
-                  {/* Icon container with subtle background */}
                   <div style={{
                     display: 'inline-flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    width: '6rem',
-                    height: '6rem',
+                    width: '5rem',
+                    height: '5rem',
                     borderRadius: '50%',
-                    background: 'linear-gradient(135deg, #faf5ff, #e9d5ff)',
-                    marginBottom: '2rem'
+                    border: '1px solid rgba(251,191,36,0.15)',
+                    background: 'rgba(251,191,36,0.05)',
+                    marginBottom: '1.5rem'
                   }}>
-                    <span style={{ fontSize: '3rem' }}>📸</span>
+                    <i className="fas fa-camera" style={{ fontSize: '2rem', color: 'rgba(251,191,36,0.4)' }}></i>
                   </div>
-                  
-                  {/* Heading */}
+
                   <h3 style={{
-                    fontSize: '2.25rem',
-                    fontWeight: 'bold',
-                    color: '#111827',
-                    marginBottom: '1.25rem'
+                    fontSize: '1.6rem',
+                    fontWeight: 300,
+                    color: 'white',
+                    marginBottom: '0.75rem',
+                    fontFamily: "'Playfair Display', serif"
                   }}>
                     În curând
                   </h3>
-                  
-                  {/* Description */}
+
                   <p style={{
-                    fontSize: '1.125rem',
-                    color: '#6b7280',
+                    fontSize: '0.95rem',
+                    color: 'rgba(255,255,255,0.3)',
                     lineHeight: '1.6'
                   }}>
                     Evenimente noi vor fi adăugate în această categorie.
@@ -308,4 +332,3 @@ export default function CategoryViewModal({ category, onClose }: CategoryViewMod
     </>
   )
 }
-

@@ -83,6 +83,19 @@ model Image {
   @@map("images")
 }
 
+model ShowreelVideo {
+  id          String   @id @default(cuid())
+  title       String   @default("Showreel")
+  subtitle    String?
+  videoUrl    String   // YouTube/Vimeo URL
+  thumbnailUrl String? // Custom thumbnail (uploaded)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("showreel_videos")
+}
+
 model HeroSlide {
   id          String   @id @default(cuid())
   filename    String

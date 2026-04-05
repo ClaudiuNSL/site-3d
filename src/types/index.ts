@@ -55,6 +55,17 @@ export interface Image {
   event?: Event
 }
 
+export interface ShowreelVideo {
+  id: string
+  title: string
+  subtitle?: string | null
+  videoUrl: string
+  thumbnailUrl?: string | null
+  isActive: boolean
+  createdAt: Date
+  updatedAt: Date
+}
+
 export interface HeroSlide {
   id: string
   filename: string

@@ -41,6 +41,7 @@ export default function AdminLayout({
   const navigation = [
     { name: 'Dashboard', href: '/admin/dashboard', icon: 'fas fa-th-large' },
     { name: 'Hero Slider', href: '/admin/hero-slider', icon: 'fas fa-panorama' },
+    { name: 'Video Showreel', href: '/admin/showreel', icon: 'fas fa-video' },
     { name: 'Categorii', href: '/admin/categories', icon: 'fas fa-folder-open' },
     { name: 'Imagini', href: '/admin/images', icon: 'fas fa-images' },
   ]
