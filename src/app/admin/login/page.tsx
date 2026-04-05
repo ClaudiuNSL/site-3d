@@ -3,12 +3,14 @@
 import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+import './login.css'
 
 export default function AdminLogin() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const [focused, setFocused] = useState<string | null>(null)
   const router = useRouter()
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -36,64 +38,136 @@ export default function AdminLogin() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
-      <div className="max-w-md w-full space-y-8">
-        <div className="text-center">
-          <h2 className="mt-6 text-3xl font-extrabold text-white">
-            Admin Panel
-          </h2>
-          <p className="mt-2 text-sm text-gray-400">
-            Accesează panoul de administrare
-          </p>
+    <div className="login-page">
+      {/* Left - Visual Panel */}
+      <div className="login-visual">
+        {/* Ambient glow */}
+        <div className="login-ambient"></div>
+
+        {/* Bokeh particles */}
+        <div className="bokeh-field">
+          {Array.from({ length: 18 }).map((_, i) => (
+            <div key={i} className={`bokeh bokeh-${i + 1}`}></div>
+          ))}
         </div>
-        <div className="bg-white/10 backdrop-blur-lg rounded-lg shadow-2xl p-8">
-          <form className="space-y-6" onSubmit={handleSubmit}>
+
+        {/* Aperture graphic */}
+        <div className="aperture-wrap">
+          <div className="aperture">
+            {Array.from({ length: 7 }).map((_, i) => (
+              <div key={i} className="aperture-blade" style={{ '--i': i } as React.CSSProperties}></div>
+            ))}
+          </div>
+          <div className="aperture-ring"></div>
+          <div className="aperture-ring aperture-ring-2"></div>
+          <div className="aperture-glow"></div>
+        </div>
+
+        {/* Brand text on visual side */}
+        <div className="login-visual-brand">
+          <div className="login-visual-logo">BC</div>
+          <div className="login-visual-line"></div>
+          <p className="login-visual-tagline">Surprind momente,<br/>creez amintiri</p>
+        </div>
+
+        {/* Decorative grid lines */}
+        <div className="login-grid-lines">
+          <div className="grid-line grid-line-h"></div>
+          <div className="grid-line grid-line-v"></div>
+        </div>
+      </div>
+
+      {/* Right - Form Panel */}
+      <div className="login-form-panel">
+        <div className="login-form-inner">
+          {/* Top corner accent */}
+          <div className="login-corner-accent"></div>
+
+          <div className="login-form-header">
+            <span className="login-label">Admin Panel</span>
+            <h1 className="login-title">Bine ai<br/>revenit</h1>
+            <p className="login-desc">Conectează-te pentru a gestiona portofoliul</p>
+          </div>
+
+          <form onSubmit={handleSubmit} className="login-form">
             {error && (
-              <div className="bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded">
-                {error}
+              <div className="login-error">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <circle cx="8" cy="8" r="7" stroke="currentColor" strokeWidth="1.5"/>
+                  <path d="M8 4.5v4M8 10.5v.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                </svg>
+                <span>{error}</span>
               </div>
             )}
-            <div>
-              <label htmlFor="email" className="sr-only">
-                Email
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                required
-                className="relative block w-full px-3 py-2 border border-gray-300/20 placeholder-gray-400 bg-white/5 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </div>
-            <div>
-              <label htmlFor="password" className="sr-only">
-                Parolă
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                required
-                className="relative block w-full px-3 py-2 border border-gray-300/20 placeholder-gray-400 bg-white/5 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
-                placeholder="Parolă"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
+
+            <div className={`login-field ${focused === 'email' ? 'login-field-focus' : ''} ${email ? 'login-field-filled' : ''}`}>
+              <label htmlFor="email">Email</label>
+              <div className="login-input-wrap">
+                <svg className="login-field-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <rect x="2" y="4" width="20" height="16" rx="3"/>
+                  <path d="M2 7l10 6 10-6"/>
+                </svg>
+                <input
+                  id="email"
+                  type="email"
+                  required
+                  placeholder="admin@email.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  onFocus={() => setFocused('email')}
+                  onBlur={() => setFocused(null)}
+                />
+              </div>
+              <div className="login-field-line"></div>
             </div>
 
-            <div>
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-              >
-                {isLoading ? 'Se conectează...' : 'Conectează-te'}
-              </button>
+            <div className={`login-field ${focused === 'password' ? 'login-field-focus' : ''} ${password ? 'login-field-filled' : ''}`}>
+              <label htmlFor="password">Parolă</label>
+              <div className="login-input-wrap">
+                <svg className="login-field-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <rect x="3" y="11" width="18" height="11" rx="3"/>
+                  <path d="M7 11V7a5 5 0 0110 0v4"/>
+                  <circle cx="12" cy="16.5" r="1.5"/>
+                </svg>
+                <input
+                  id="password"
+                  type="password"
+                  required
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  onFocus={() => setFocused('password')}
+                  onBlur={() => setFocused(null)}
+                />
+              </div>
+              <div className="login-field-line"></div>
             </div>
+
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="login-submit"
+            >
+              <span className="login-submit-text">
+                {isLoading ? 'Se conectează...' : 'Conectează-te'}
+              </span>
+              {!isLoading && (
+                <svg className="login-submit-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M5 12h14M13 6l6 6-6 6"/>
+                </svg>
+              )}
+              {isLoading && (
+                <div className="login-spinner"></div>
+              )}
+              <div className="login-submit-shine"></div>
+            </button>
           </form>
+
+          <div className="login-footer">
+            <div className="login-footer-line"></div>
+            <span>Banciu Costin Photography</span>
+            <div className="login-footer-line"></div>
+          </div>
         </div>
       </div>
     </div>

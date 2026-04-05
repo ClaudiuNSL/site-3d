@@ -11,10 +11,11 @@ export async function GET() {
     }
 
     // Get counts for all entities
-    const [categoriesCount, eventsCount, imagesCount] = await Promise.all([
+    const [categoriesCount, eventsCount, imagesCount, heroSlidesCount] = await Promise.all([
       db.category.count(),
       db.event.count(),
-      db.image.count()
+      db.image.count(),
+      db.heroSlide.count().catch(() => 0), // Graceful fallback if table doesn't exist yet
     ])
 
     // Get recent items
@@ -43,7 +44,8 @@ export async function GET() {
       stats: {
         categoriesCount,
         eventsCount,
-        imagesCount
+        imagesCount,
+        heroSlidesCount
       },
       recentItems: {
         categories: recentCategories,

@@ -21,21 +21,16 @@ export default function NewCategoryPage() {
     e.preventDefault()
     setIsSubmitting(true)
     setError('')
-
     try {
       const response = await fetch('/api/admin/categories', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
       })
-
       if (!response.ok) {
         const errorData = await response.json()
         throw new Error(errorData.error || 'Eroare la crearea categoriei')
       }
-
       router.push('/admin/categories')
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Eroare necunoscută')
@@ -52,112 +47,59 @@ export default function NewCategoryPage() {
     }))
   }
 
+  const inputClass = "w-full px-3.5 py-2.5 bg-white/[0.04] border border-white/[0.08] rounded-lg text-white text-sm placeholder-white/20 focus:outline-none focus:border-[#fbbf24]/40 focus:ring-1 focus:ring-[#fbbf24]/20 transition-colors"
+
   return (
     <div>
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Adaugă categorie nouă</h1>
-        <p className="text-gray-600">Creează o categorie nouă pentru evenimentele tale.</p>
+      <div className="mb-6">
+        <div className="flex items-center gap-2 text-sm text-white/30 mb-4">
+          <Link href="/admin/categories" className="hover:text-white/60 transition-colors">Categorii</Link>
+          <i className="fas fa-chevron-right text-[10px]"></i>
+          <span className="text-white/60">Categorie nouă</span>
+        </div>
+        <h1 className="text-2xl font-light text-white" style={{fontFamily: "'Playfair Display', serif"}}>Categorie nouă</h1>
       </div>
 
       {error && (
-        <div className="mb-4 bg-red-50 border border-red-200 rounded-md p-4">
-          <p className="text-red-800">{error}</p>
-        </div>
+        <div className="mb-4 bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-lg text-sm">{error}</div>
       )}
 
-      <div className="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl md:col-span-2">
-        <form onSubmit={handleSubmit} className="px-4 py-6 sm:p-8">
-          <div className="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-            <div className="sm:col-span-4">
-              <label htmlFor="name" className="block text-sm font-medium leading-6 text-gray-900">
-                Nume categorie *
-              </label>
-              <div className="mt-2">
-                <input
-                  type="text"
-                  name="name"
-                  id="name"
-                  required
-                  value={formData.name}
-                  onChange={handleChange}
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-purple-600 sm:text-sm sm:leading-6"
-                  placeholder="ex: Nuntă"
-                />
-              </div>
+      <div className="bg-[#111111] rounded-xl border border-white/[0.06] p-6 max-w-2xl">
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div className="grid grid-cols-3 gap-4">
+            <div className="col-span-2">
+              <label className="block text-xs text-white/40 mb-1.5 uppercase tracking-wider">Nume categorie *</label>
+              <input type="text" name="name" required value={formData.name} onChange={handleChange} className={inputClass} placeholder="ex: Nuntă" />
             </div>
-
-            <div className="sm:col-span-2">
-              <label htmlFor="order" className="block text-sm font-medium leading-6 text-gray-900">
-                Ordine
-              </label>
-              <div className="mt-2">
-                <input
-                  type="number"
-                  name="order"
-                  id="order"
-                  value={formData.order}
-                  onChange={handleChange}
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-purple-600 sm:text-sm sm:leading-6"
-                  min="0"
-                />
-              </div>
-            </div>
-
-            <div className="col-span-full">
-              <label htmlFor="subtitle" className="block text-sm font-medium leading-6 text-gray-900">
-                Subtitlu
-              </label>
-              <div className="mt-2">
-                <input
-                  type="text"
-                  name="subtitle"
-                  id="subtitle"
-                  value={formData.subtitle}
-                  onChange={handleChange}
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-purple-600 sm:text-sm sm:leading-6"
-                  placeholder="ex: O zi, o viață de amintiri"
-                />
-              </div>
-            </div>
-
-            <div className="col-span-full">
-              <EmojiSelector
-                value={formData.icon}
-                onChange={(emoji) => setFormData(prev => ({ ...prev, icon: emoji }))}
-                label="Icon (Emoji)"
-              />
-            </div>
-
-            <div className="col-span-full">
-              <label htmlFor="description" className="block text-sm font-medium leading-6 text-gray-900">
-                Descriere
-              </label>
-              <div className="mt-2">
-                <textarea
-                  id="description"
-                  name="description"
-                  rows={3}
-                  value={formData.description}
-                  onChange={handleChange}
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-purple-600 sm:text-sm sm:leading-6"
-                  placeholder="Scrie o descriere pentru această categorie..."
-                />
-              </div>
+            <div>
+              <label className="block text-xs text-white/40 mb-1.5 uppercase tracking-wider">Ordine</label>
+              <input type="number" name="order" value={formData.order} onChange={handleChange} className={inputClass} min="0" />
             </div>
           </div>
 
-          <div className="mt-8 flex">
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="rounded-md bg-purple-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-purple-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-600 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
+          <div>
+            <label className="block text-xs text-white/40 mb-1.5 uppercase tracking-wider">Subtitlu</label>
+            <input type="text" name="subtitle" value={formData.subtitle} onChange={handleChange} className={inputClass} placeholder="ex: O zi, o viață de amintiri" />
+          </div>
+
+          <div>
+            <EmojiSelector
+              value={formData.icon}
+              onChange={(emoji) => setFormData(prev => ({ ...prev, icon: emoji }))}
+              label="Icon (Emoji)"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs text-white/40 mb-1.5 uppercase tracking-wider">Descriere</label>
+            <textarea name="description" rows={3} value={formData.description} onChange={handleChange} className={inputClass} placeholder="Descrierea categoriei..." />
+          </div>
+
+          <div className="flex items-center gap-3 pt-4 border-t border-white/[0.06]">
+            <button type="submit" disabled={isSubmitting} className="px-5 py-2.5 bg-[#fbbf24] text-[#0a0a0a] text-sm font-medium rounded-lg hover:bg-[#f59e0b] transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
               {isSubmitting ? 'Se salvează...' : 'Salvează categoria'}
             </button>
-            <Link
-              href="/admin/categories"
-              className="ml-3 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-            >
+            <Link href="/admin/categories" className="px-5 py-2.5 text-sm text-white/50 hover:text-white/80 transition-colors">
               Anulează
             </Link>
           </div>
