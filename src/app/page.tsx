@@ -663,7 +663,7 @@ export default function Home() {
       if (contactForm) contactForm.removeEventListener('submit', handleFormSubmit)
       revealObserver.disconnect()
     }
-  }, [selectedCategory, openAboutModal, categories])
+  }, [selectedCategory, openAboutModal, categories, packages])
 
   // =============================================
   // AFIȘAREA PAGINII (JSX)
