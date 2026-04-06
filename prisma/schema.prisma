@@ -112,3 +112,22 @@ model HeroSlide {
 
   @@map("hero_slides")
 }
+
+model Package {
+  id          String   @id @default(cuid())
+  name        String
+  icon        String   @default("fas fa-camera")
+  price       Int
+  currency    String   @default("Euro")
+  tier        String   @default("Pachet Basic")
+  badge       String?
+  features    Json     @default("[]")
+  extras      Json     @default("[]")
+  notes       Json     @default("[]")
+  order       Int      @default(0)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("packages")
+}

@@ -81,6 +81,38 @@ export interface HeroSlide {
   updatedAt: Date
 }
 
+export interface PackageFeature {
+  icon: string
+  text: string
+}
+
+export interface PackageExtra {
+  text: string
+  price: string
+}
+
+export interface PackageNote {
+  icon: string
+  text: string
+}
+
+export interface Package {
+  id: string
+  name: string
+  icon: string
+  price: number
+  currency: string
+  tier: string
+  badge?: string | null
+  features: PackageFeature[]
+  extras: PackageExtra[]
+  notes: PackageNote[]
+  order: number
+  isActive: boolean
+  createdAt: Date
+  updatedAt: Date
+}
+
 declare module "next-auth" {
   interface Session {
     user: {

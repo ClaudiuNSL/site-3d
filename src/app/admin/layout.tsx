@@ -44,6 +44,7 @@ export default function AdminLayout({
     { name: 'Video Showreel', href: '/admin/showreel', icon: 'fas fa-video' },
     { name: 'Categorii', href: '/admin/categories', icon: 'fas fa-folder-open' },
     { name: 'Imagini', href: '/admin/images', icon: 'fas fa-images' },
+    { name: 'Pachete', href: '/admin/packages', icon: 'fas fa-tag' },
   ]
 
   const secondaryNav = [

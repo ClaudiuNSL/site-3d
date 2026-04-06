@@ -2,11 +2,13 @@
 
 import { Category } from '@/types'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { Suspense, useEffect, useState } from 'react'
 
-export default function NewEventPage() {
+function NewEventForm() {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const preselectedCategoryId = searchParams.get('categoryId') || ''
   const [categories, setCategories] = useState<Category[]>([])
   const [loading, setLoading] = useState(false)
   const [submitting, setSubmitting] = useState(false)
@@ -15,7 +17,7 @@ export default function NewEventPage() {
   const [formData, setFormData] = useState({
     name: '',
     description: '',
-    categoryId: '',
+    categoryId: preselectedCategoryId,
     eventDate: '',
     location: '',
     isActive: true
@@ -63,7 +65,8 @@ export default function NewEventPage() {
         throw new Error(errorData.error || 'Eroare la crearea evenimentului')
       }
 
-      router.push('/admin/events')
+      const eventData = await response.json()
+      router.push(`/admin/events/${eventData.id}/images`)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Eroare la crearea evenimentului')
     } finally {
@@ -236,5 +239,17 @@ export default function NewEventPage() {
         </form>
       </div>
     </div>
+  )
+}
+
+export default function NewEventPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex items-center justify-center py-12">
+        <div className="w-10 h-10 border-2 border-[#fbbf24]/20 border-t-[#fbbf24] rounded-full animate-spin"></div>
+      </div>
+    }>
+      <NewEventForm />
+    </Suspense>
   )
 }

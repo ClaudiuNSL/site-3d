@@ -2,7 +2,7 @@
 
 import CategoryViewModal from '@/components/CategoryViewModal'
 import AboutModal from '@/components/AboutModal'
-import { Category, HeroSlide, ShowreelVideo } from '@/types'
+import { Category, HeroSlide, ShowreelVideo, Package } from '@/types'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useState, useRef, useCallback } from 'react'
@@ -88,6 +88,8 @@ export default function Home() {
   const [activePackage, setActivePackage] = useState(0)
   const [showreelVideo, setShowreelVideo] = useState<ShowreelVideo | null>(null)
   const [showreelPlaying, setShowreelPlaying] = useState(false)
+  const [packages, setPackages] = useState<Package[]>([])
+
 
   const statsRef = useRef<HTMLElement>(null)
 
@@ -101,10 +103,11 @@ export default function Home() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [catRes, heroRes, showreelRes] = await Promise.all([
+        const [catRes, heroRes, showreelRes, pkgRes] = await Promise.all([
           fetch('/api/categories'),
           fetch('/api/hero-slides'),
           fetch('/api/showreel'),
+          fetch('/api/packages'),
         ])
         if (catRes.ok) setCategories(await catRes.json())
         if (heroRes.ok) setHeroSlides(await heroRes.json())
@@ -112,6 +115,7 @@ export default function Home() {
           const data = await showreelRes.json()
           if (data) setShowreelVideo(data)
         }
+        if (pkgRes.ok) setPackages(await pkgRes.json())
       } catch (error) {
         console.error('Error fetching data:', error)
       } finally {
@@ -413,7 +417,7 @@ export default function Home() {
       if (contactForm) contactForm.removeEventListener('submit', handleFormSubmit)
       revealObserver.disconnect()
     }
-  }, [selectedCategory, openAboutModal])
+  }, [selectedCategory, openAboutModal, categories])
 
   return (
     <>
@@ -674,6 +678,7 @@ export default function Home() {
       </section>
 
       {/* Pachete Servicii */}
+      {packages.length > 0 && (
       <section id="servicii" className="packages-section">
         <div className="packages-inner">
           <div className="packages-header reveal">
@@ -684,237 +689,73 @@ export default function Home() {
 
           {/* Tab-uri pachete */}
           <div className="packages-tabs reveal">
-            {[
-              { name: 'Nuntă', icon: 'fas fa-ring' },
-              { name: 'Botez', icon: 'fas fa-baby' },
-              { name: 'Cununie Civilă', icon: 'fas fa-heart' },
-              { name: 'Majorat', icon: 'fas fa-glass-cheers' },
-            ].map((tab, i) => (
+            {packages.map((pkg, i) => (
               <button
-                key={i}
+                key={pkg.id}
                 className={`packages-tab ${activePackage === i ? 'packages-tab-active' : ''}`}
                 onClick={() => setActivePackage(i)}
               >
-                <i className={tab.icon}></i>
-                <span>{tab.name}</span>
+                <i className={pkg.icon}></i>
+                <span>{pkg.name}</span>
               </button>
             ))}
           </div>
 
-          {/* Pachet Nuntă */}
-          {activePackage === 0 && (
-            <div className="package-card">
-              <div className="package-card-header">
-                <div className="package-badge">Popular</div>
-                <h3 className="package-name">Nuntă</h3>
-                <div className="package-price">
-                  <span className="package-amount">1500</span>
-                  <span className="package-currency">Euro</span>
+          {/* Pachet activ */}
+          {packages.map((pkg, i) => {
+            if (activePackage !== i) return null
+            const features = (pkg.features || []) as {icon: string; text: string}[]
+            const extras = (pkg.extras || []) as {text: string; price: string}[]
+            const notes = (pkg.notes || []) as {icon: string; text: string}[]
+            return (
+              <div key={pkg.id} className="package-card">
+                <div className="package-card-header">
+                  {pkg.badge && <div className="package-badge">{pkg.badge}</div>}
+                  <h3 className="package-name">{pkg.name}</h3>
+                  <div className="package-price">
+                    <span className="package-amount">{pkg.price}</span>
+                    <span className="package-currency">{pkg.currency}</span>
+                  </div>
+                  <p className="package-tier">{pkg.tier}</p>
                 </div>
-                <p className="package-tier">Pachet Basic</p>
+                <div className="package-card-body">
+                  <div className="package-features">
+                    {features.map((f, fi) => (
+                      <div key={fi} className="package-feature"><i className={f.icon}></i><span>{f.text}</span></div>
+                    ))}
+                  </div>
+
+                  {extras.length > 0 && (
+                    <div className="package-extras">
+                      <h4 className="package-extras-title">Servicii Extra</h4>
+                      {extras.map((ex, ei) => (
+                        <div key={ei} className="package-extra-item"><span>{ex.text}</span><span className="package-extra-price">{ex.price}</span></div>
+                      ))}
+                    </div>
+                  )}
+
+                  {notes.length > 0 && (
+                    <div className="package-notes">
+                      {notes.map((n, ni) => (
+                        <p key={ni}><i className={n.icon}></i> {n.text}</p>
+                      ))}
+                    </div>
+                  )}
+
+                  <a href="#contact" className="package-cta" onClick={(e) => {
+                    e.preventDefault()
+                    document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' })
+                  }}>
+                    <span>Solicită o ofertă</span>
+                    <i className="fas fa-arrow-right"></i>
+                  </a>
+                </div>
               </div>
-              <div className="package-card-body">
-                <div className="package-features">
-                  <div className="package-feature"><i className="fas fa-camera"></i><span>1 Fotograf (acasă mirii, biserică, restaurant)</span></div>
-                  <div className="package-feature"><i className="fas fa-video"></i><span>1 Videograf (acasă mirii, biserică, restaurant)</span></div>
-                  <div className="package-feature"><i className="fas fa-heart"></i><span>Ședință foto ziua nunții</span></div>
-                  <div className="package-feature"><i className="fas fa-images"></i><span>Fotografii nelimitate, selectate și editate</span></div>
-                  <div className="package-feature"><i className="fas fa-film"></i><span>Filmare Full HD 2-3 ore din toată nunta</span></div>
-                  <div className="package-feature"><i className="fas fa-play-circle"></i><span>Videoclip prezentare max 2 minute</span></div>
-                  <div className="package-feature"><i className="fas fa-comments"></i><span>Consultanță ziua nunții</span></div>
-                  <div className="package-feature"><i className="fas fa-link"></i><span>Link valabilitate 6 luni cu fotografiile + filmarea</span></div>
-                  <div className="package-feature"><i className="fas fa-bolt"></i><span>Same day edit (20 fotografii editate în ziua evenimentului)</span></div>
-                </div>
-
-                <div className="package-extras">
-                  <h4 className="package-extras-title">Servicii Extra</h4>
-                  <div className="package-extra-item"><span>Second shooter acasă nașii, biserică, restaurant</span><span className="package-extra-price">350 €</span></div>
-                  <div className="package-extra-item"><span>Second videograf acasă nașii, biserică, restaurant</span><span className="package-extra-price">350 €</span></div>
-                  <div className="package-extra-item"><span>Ședință foto Save the Date</span><span className="package-extra-price">150 €</span></div>
-                  <div className="package-extra-item"><span>Ședință foto Trash the Dress</span><span className="package-extra-price">200 €</span></div>
-                  <div className="package-extra-item"><span>Stick 128 GB calitate 2.3 în carcasă personalizată</span><span className="package-extra-price">30 €</span></div>
-                  <div className="package-extra-item"><span>Album foto carte 40 pag / 20 colaje, 30x30 cm</span><span className="package-extra-price">180 €</span></div>
-                  <div className="package-extra-item"><span>Album foto carte 30 pag / 15 colaje, 20x20 cm</span><span className="package-extra-price">100 €</span></div>
-                  <div className="package-extra-item"><span>Fotografii dronă</span><span className="package-extra-price">100 €</span></div>
-                  <div className="package-extra-item"><span>Filmare dronă ziua nunții (unde permite zborul)</span><span className="package-extra-price">100 €</span></div>
-                </div>
-
-                <div className="package-notes">
-                  <p><i className="fas fa-clock"></i> Predarea materialelor: 80 zile lucrătoare</p>
-                  <p><i className="fas fa-file-signature"></i> Rezervare: contract + avans 30%</p>
-                  <p><i className="fas fa-map-marker-alt"></i> În afara Constanței: transport/cazare de comun acord</p>
-                </div>
-
-                <a href="#contact" className="package-cta" onClick={(e) => {
-                  e.preventDefault()
-                  document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' })
-                }}>
-                  <span>Solicită o ofertă</span>
-                  <i className="fas fa-arrow-right"></i>
-                </a>
-              </div>
-            </div>
-          )}
-
-          {/* Pachet Botez */}
-          {activePackage === 1 && (
-            <div className="package-card">
-              <div className="package-card-header">
-                <h3 className="package-name">Botez</h3>
-                <div className="package-price">
-                  <span className="package-amount">400</span>
-                  <span className="package-currency">Euro</span>
-                </div>
-                <p className="package-tier">Pachet Basic</p>
-              </div>
-              <div className="package-card-body">
-                <div className="package-features">
-                  <div className="package-feature"><i className="fas fa-camera"></i><span>1 Fotograf (acasă copil, biserică)</span></div>
-                  <div className="package-feature"><i className="fas fa-video"></i><span>1 Videograf (acasă copil, biserică)</span></div>
-                  <div className="package-feature"><i className="fas fa-baby"></i><span>Ședință foto ziua botezului</span></div>
-                  <div className="package-feature"><i className="fas fa-images"></i><span>Fotografii nelimitate, selectate și editate</span></div>
-                  <div className="package-feature"><i className="fas fa-film"></i><span>Filmare Full HD (selecție, editare) 1-2 ore</span></div>
-                  <div className="package-feature"><i className="fas fa-play-circle"></i><span>Videoclip prezentare max 2 minute</span></div>
-                  <div className="package-feature"><i className="fas fa-comments"></i><span>Consultanță ziua botezului</span></div>
-                  <div className="package-feature"><i className="fas fa-link"></i><span>Link valabilitate 6 luni cu fotografiile + filmarea</span></div>
-                  <div className="package-feature"><i className="fas fa-bolt"></i><span>Same day edit (20 fotografii editate în ziua evenimentului)</span></div>
-                </div>
-
-                <div className="package-extras">
-                  <h4 className="package-extras-title">Servicii Extra</h4>
-                  <div className="package-extra-item"><span>Fotograf acasă</span><span className="package-extra-price">200 €</span></div>
-                  <div className="package-extra-item"><span>Videograf acasă</span><span className="package-extra-price">200 €</span></div>
-                  <div className="package-extra-item"><span>Fotograf biserică</span><span className="package-extra-price">200 €</span></div>
-                  <div className="package-extra-item"><span>Videograf biserică</span><span className="package-extra-price">200 €</span></div>
-                  <div className="package-extra-item"><span>Fotograf restaurant durată 3 ore</span><span className="package-extra-price">200 €</span></div>
-                  <div className="package-extra-item"><span>Videograf restaurant durată 3 ore</span><span className="package-extra-price">200 €</span></div>
-                  <div className="package-extra-item"><span>Stick 128 GB calitate 2.3 în carcasă personalizată</span><span className="package-extra-price">30 €</span></div>
-                  <div className="package-extra-item"><span>Album foto carte 30 pag / 15 colaje, 20x20 cm</span><span className="package-extra-price">80 €</span></div>
-                  <div className="package-extra-item"><span>Fotografii dronă</span><span className="package-extra-price">100 €</span></div>
-                  <div className="package-extra-item"><span>Filmare dronă ziua botez (unde permite zborul)</span><span className="package-extra-price">100 €</span></div>
-                </div>
-
-                <div className="package-notes">
-                  <p><i className="fas fa-clock"></i> Predarea materialelor: 60 zile lucrătoare</p>
-                  <p><i className="fas fa-file-signature"></i> Rezervare: contract + avans 30%</p>
-                  <p><i className="fas fa-exclamation-circle"></i> Ora maximă 23:30 — peste această oră: 100 €/h</p>
-                  <p><i className="fas fa-map-marker-alt"></i> În afara Constanței: transport/cazare de comun acord</p>
-                </div>
-
-                <a href="#contact" className="package-cta" onClick={(e) => {
-                  e.preventDefault()
-                  document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' })
-                }}>
-                  <span>Solicită o ofertă</span>
-                  <i className="fas fa-arrow-right"></i>
-                </a>
-              </div>
-            </div>
-          )}
-
-          {/* Pachet Cununie Civilă */}
-          {activePackage === 2 && (
-            <div className="package-card">
-              <div className="package-card-header">
-                <h3 className="package-name">Cununie Civilă</h3>
-                <div className="package-price">
-                  <span className="package-amount">350</span>
-                  <span className="package-currency">Euro</span>
-                </div>
-                <p className="package-tier">Pachet Basic</p>
-              </div>
-              <div className="package-card-body">
-                <div className="package-features">
-                  <div className="package-feature"><i className="fas fa-camera"></i><span>1 Fotograf (casa căsătoriilor)</span></div>
-                  <div className="package-feature"><i className="fas fa-video"></i><span>1 Videograf (casa căsătoriilor)</span></div>
-                  <div className="package-feature"><i className="fas fa-heart"></i><span>Ședință foto casa căsătoriilor</span></div>
-                  <div className="package-feature"><i className="fas fa-images"></i><span>Fotografii nelimitate, selectate și editate</span></div>
-                  <div className="package-feature"><i className="fas fa-film"></i><span>Filmare Full HD (selecție, editare) 10-20 minute</span></div>
-                  <div className="package-feature"><i className="fas fa-play-circle"></i><span>Videoclip prezentare max 2 minute</span></div>
-                  <div className="package-feature"><i className="fas fa-link"></i><span>Link valabilitate 6 luni cu fotografiile + filmarea</span></div>
-                  <div className="package-feature"><i className="fas fa-bolt"></i><span>Same day edit (20 fotografii editate în ziua evenimentului)</span></div>
-                </div>
-
-                <div className="package-extras">
-                  <h4 className="package-extras-title">Servicii Extra</h4>
-                  <div className="package-extra-item"><span>Fotograf casa căsătoriilor</span><span className="package-extra-price">200 €</span></div>
-                  <div className="package-extra-item"><span>Videograf casa căsătoriilor</span><span className="package-extra-price">200 €</span></div>
-                  <div className="package-extra-item"><span>Ședință foto</span><span className="package-extra-price">200 €</span></div>
-                  <div className="package-extra-item"><span>Fotograf restaurant durată 3 ore</span><span className="package-extra-price">200 €</span></div>
-                  <div className="package-extra-item"><span>Videograf restaurant durată 3 ore</span><span className="package-extra-price">200 €</span></div>
-                  <div className="package-extra-item"><span>Stick 128 GB calitate 2.3 în carcasă</span><span className="package-extra-price">30 €</span></div>
-                  <div className="package-extra-item"><span>Album foto carte 30 pag, 20x20 cm</span><span className="package-extra-price">80 €</span></div>
-                  <div className="package-extra-item"><span>Filmare dronă (unde permite zborul)</span><span className="package-extra-price">100 €</span></div>
-                </div>
-
-                <div className="package-notes">
-                  <p><i className="fas fa-clock"></i> Predarea materialelor: 50 zile lucrătoare</p>
-                  <p><i className="fas fa-file-signature"></i> Rezervare: contract + avans 30%</p>
-                  <p><i className="fas fa-map-marker-alt"></i> În afara Constanței: transport/cazare de comun acord</p>
-                </div>
-
-                <a href="#contact" className="package-cta" onClick={(e) => {
-                  e.preventDefault()
-                  document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' })
-                }}>
-                  <span>Solicită o ofertă</span>
-                  <i className="fas fa-arrow-right"></i>
-                </a>
-              </div>
-            </div>
-          )}
-
-          {/* Pachet Majorat */}
-          {activePackage === 3 && (
-            <div className="package-card">
-              <div className="package-card-header">
-                <h3 className="package-name">Majorat</h3>
-                <div className="package-price">
-                  <span className="package-amount">450</span>
-                  <span className="package-currency">Euro</span>
-                </div>
-                <p className="package-tier">Pachet Basic</p>
-              </div>
-              <div className="package-card-body">
-                <div className="package-features">
-                  <div className="package-feature"><i className="fas fa-camera"></i><span>1 Fotograf (restaurant max ora 24:00)</span></div>
-                  <div className="package-feature"><i className="fas fa-video"></i><span>1 Videograf (restaurant max ora 24:00)</span></div>
-                  <div className="package-feature"><i className="fas fa-star"></i><span>Ședință foto ziua evenimentului cu sărbătoritul/a</span></div>
-                  <div className="package-feature"><i className="fas fa-images"></i><span>Fotografii nelimitate, selectate și editate</span></div>
-                  <div className="package-feature"><i className="fas fa-film"></i><span>Filmare Full HD (selecție, editare) 1-2 ore</span></div>
-                  <div className="package-feature"><i className="fas fa-play-circle"></i><span>Videoclip prezentare max 2 minute</span></div>
-                  <div className="package-feature"><i className="fas fa-link"></i><span>Link valabilitate 6 luni cu fotografiile + filmarea</span></div>
-                  <div className="package-feature"><i className="fas fa-bolt"></i><span>Same day edit (20 fotografii editate în ziua evenimentului)</span></div>
-                </div>
-
-                <div className="package-extras">
-                  <h4 className="package-extras-title">Servicii Extra</h4>
-                  <div className="package-extra-item"><span>Ședință foto</span><span className="package-extra-price">200 €</span></div>
-                  <div className="package-extra-item"><span>Fotograf restaurant durată 3 ore</span><span className="package-extra-price">200 €</span></div>
-                  <div className="package-extra-item"><span>Videograf restaurant durată 3 ore</span><span className="package-extra-price">200 €</span></div>
-                  <div className="package-extra-item"><span>Stick 128 GB calitate 2.3 în carcasă</span><span className="package-extra-price">30 €</span></div>
-                  <div className="package-extra-item"><span>Album foto carte 30 pag / 15 colaje, 20x20 cm</span><span className="package-extra-price">80 €</span></div>
-                  <div className="package-extra-item"><span>Filmare dronă (unde permite zborul)</span><span className="package-extra-price">100 €</span></div>
-                </div>
-
-                <div className="package-notes">
-                  <p><i className="fas fa-clock"></i> Predarea materialelor: 50 zile lucrătoare</p>
-                  <p><i className="fas fa-file-signature"></i> Rezervare: contract + avans 30%</p>
-                  <p><i className="fas fa-map-marker-alt"></i> În afara Constanței: transport/cazare de comun acord</p>
-                </div>
-
-                <a href="#contact" className="package-cta" onClick={(e) => {
-                  e.preventDefault()
-                  document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' })
-                }}>
-                  <span>Solicită o ofertă</span>
-                  <i className="fas fa-arrow-right"></i>
-                </a>
-              </div>
-            </div>
-          )}
+            )
+          })}
         </div>
       </section>
+      )}
 
       {/* Contact Section */}
       <section id="contact" className="ct">

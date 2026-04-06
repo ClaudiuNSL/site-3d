@@ -108,7 +108,34 @@ export default function AllImagesPage() {
       {filteredImages.length === 0 ? (
         <div className="bg-[#111111] rounded-xl border border-white/[0.06] px-5 py-16 text-center">
           <i className="fas fa-images text-white/10 text-4xl mb-3"></i>
-          <p className="text-white/30 text-sm">{selectedCategory === 'all' ? 'Nu există imagini încă' : 'Nu există imagini pentru categoria selectată'}</p>
+          {selectedCategory === 'all' ? (
+            <p className="text-white/30 text-sm">Nu există imagini încă</p>
+          ) : (() => {
+            const selectedCat = categories.find(c => c.id === selectedCategory)
+            const catEvents = images.filter(img => img.event?.category?.id === selectedCategory)
+            const hasEvents = (selectedCat as Category & { events?: Event[] })?.events?.length || catEvents.length > 0
+            return (
+              <>
+                <p className="text-white/30 text-sm mb-4">Nu există imagini pentru <span className="text-white/60">{selectedCat?.name}</span></p>
+                <div className="flex items-center justify-center gap-3">
+                  <Link
+                    href={`/admin/events/new?categoryId=${selectedCategory}`}
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-[#fbbf24] text-[#0a0a0a] rounded-lg text-sm font-medium hover:bg-[#f59e0b] transition-colors"
+                  >
+                    <i className="fas fa-plus text-xs"></i>
+                    Creează eveniment
+                  </Link>
+                  <Link
+                    href="/admin/events"
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 text-white/50 rounded-lg text-sm hover:text-white/80 hover:bg-white/10 transition-colors border border-white/[0.06]"
+                  >
+                    <i className="fas fa-list text-xs"></i>
+                    Vezi evenimente
+                  </Link>
+                </div>
+              </>
+            )
+          })()}
         </div>
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
