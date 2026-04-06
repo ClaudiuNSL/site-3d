@@ -46,6 +46,8 @@ export default function EventImagesPage() {
     }
   }
 
+  const [uploadProgress, setUploadProgress] = useState('')
+
   const handleUpload = async () => {
     if (!selectedFiles || selectedFiles.length === 0) {
       alert('Selecteaza cel putin o imagine')
@@ -55,36 +57,82 @@ export default function EventImagesPage() {
     setUploading(true)
     setError('')
 
+    const files = Array.from(selectedFiles)
+    const uploadedCount = { success: 0, failed: 0 }
+
     try {
-      const formData = new FormData()
-      Array.from(selectedFiles).forEach((file) => {
-        formData.append('images', file)
-      })
-      formData.append('eventId', eventId)
+      // Încercăm upload direct la Vercel Blob (ocolește limita de 4.5MB)
+      const { upload } = await import('@vercel/blob/client')
 
-      const response = await fetch('/api/admin/images/upload', {
-        method: 'POST',
-        body: formData
-      })
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i]
+        setUploadProgress(`Se incarca ${i + 1} din ${files.length}: ${file.name}`)
 
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || 'Eroare la incarcarea imaginilor')
+        try {
+          const blob = await upload(file.name, file, {
+            access: 'public',
+            handleUploadUrl: '/api/admin/images/upload-client',
+          })
+
+          // Salvăm înregistrarea în baza de date
+          await fetch('/api/admin/images/save-record', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              eventId,
+              url: blob.url,
+              pathname: blob.pathname,
+              contentType: blob.contentType,
+              size: null,
+            })
+          })
+
+          uploadedCount.success++
+        } catch (uploadErr) {
+          console.error(`Error uploading ${file.name} via client:`, uploadErr)
+          uploadedCount.failed++
+        }
       }
 
-      const uploadedImages = await response.json()
-      setImages([...images, ...uploadedImages])
+      if (uploadedCount.success === 0 && uploadedCount.failed > 0) {
+        // Dacă upload-ul direct a eșuat complet, încercăm metoda clasică (pentru fișiere mici)
+        setUploadProgress('Se incearca metoda alternativa...')
+        const formData = new FormData()
+        files.forEach((file) => {
+          formData.append('images', file)
+        })
+        formData.append('eventId', eventId)
+
+        const response = await fetch('/api/admin/images/upload', {
+          method: 'POST',
+          body: formData
+        })
+
+        if (!response.ok) {
+          const errorData = await response.json()
+          throw new Error(errorData.error || 'Eroare la incarcarea imaginilor')
+        }
+      }
+
+      // Reîncarcă datele pentru a vedea noile imagini
+      await fetchEventData()
       setSelectedFiles(null)
+      setUploadProgress('')
 
       // Reset file input
       const fileInput = document.getElementById('image-upload') as HTMLInputElement
       if (fileInput) {
         fileInput.value = ''
       }
+
+      if (uploadedCount.failed > 0 && uploadedCount.success > 0) {
+        setError(`${uploadedCount.success} fisiere incarcate cu succes, ${uploadedCount.failed} au esuat.`)
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Eroare la incarcarea imaginilor')
     } finally {
       setUploading(false)
+      setUploadProgress('')
     }
   }
 
@@ -206,7 +254,7 @@ export default function EventImagesPage() {
                 className="block w-full text-sm text-white/40 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-[#fbbf24]/10 file:text-[#fbbf24] hover:file:bg-[#fbbf24]/20 file:transition-colors file:cursor-pointer"
               />
               <p className="mt-1 text-sm text-white/30">
-                Poti selecta imagini (JPEG, PNG, WebP, HEIC) si video-uri (MP4, MOV). Dimensiunea maxima: 500MB per fisier.
+                Poti selecta imagini (JPEG, PNG, WebP, HEIC) si video-uri (MP4, MOV). Fara limita de dimensiune - upload direct.
               </p>
             </div>
 
@@ -236,7 +284,7 @@ export default function EventImagesPage() {
               {uploading ? (
                 <>
                   <div className="w-4 h-4 border-2 border-black/20 border-t-black rounded-full animate-spin mr-2"></div>
-                  Se incarca...
+                  {uploadProgress || 'Se incarca...'}
                 </>
               ) : (
                 <>

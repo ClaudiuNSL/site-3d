@@ -1,16 +1,41 @@
+// =============================================
+// COMPONENTA ABOUT MODAL (AboutModal.tsx)
+// Aceasta este fereastra popup "Despre Mine"
+// Apare când utilizatorul apasă pe "Despre" în meniu
+// Modal = o fereastră care se afișează deasupra conținutului principal
+// =============================================
+
+// 'use client' = spune Next.js că această componentă rulează în BROWSER (nu pe server)
+// Este necesar pentru componente care au interactivitate (click-uri, hover, etc.)
 'use client'
 
+// Image = componenta Next.js optimizată pentru imagini
+// Încarcă imaginile mai eficient decât un tag <img> normal
 import Image from 'next/image'
 
+// interface = definim un "contract" (tip TypeScript) pentru proprietățile componentei
+// isOpen = dacă modalul este deschis (true) sau închis (false)
+// onClose = funcția care se apelează când utilizatorul vrea să închidă modalul
 interface AboutModalProps {
   isOpen: boolean
   onClose: () => void
 }
 
+// Componenta principală AboutModal
+// Primește două proprietăți: isOpen (boolean) și onClose (funcție)
+// Destructurarea { isOpen, onClose } extrage valorile din obiectul props
 export default function AboutModal({ isOpen, onClose }: AboutModalProps) {
+  // Dacă modalul NU este deschis, nu afișa nimic (return null = nimic pe ecran)
   if (!isOpen) return null
 
   return (
+    // Div-ul exterior = fundalul întunecat semi-transparent (overlay)
+    // position: fixed = rămâne fix pe ecran, nu se mișcă la scroll
+    // top/left/right/bottom: 0 = acoperă TOT ecranul
+    // zIndex: 4000 = apare deasupra altor elemente (cu cât e mai mare, cu atât e mai "în față")
+    // backgroundColor cu rgba = negru cu 85% opacitate (semi-transparent)
+    // backdropFilter: blur = face conținutul din spate să fie neclar (efect de sticlă mată)
+    // onClick={onClose} = când dai click pe fundal, se închide modalul
     <div
       style={{
         position: 'fixed',
@@ -29,6 +54,11 @@ export default function AboutModal({ isOpen, onClose }: AboutModalProps) {
       }}
       onClick={onClose}
     >
+      {/* Stiluri CSS scrise direct în componentă (styled-jsx) */}
+      {/* @keyframes = definesc animații CSS */}
+      {/* fadeIn = animație de apariție graduală (din transparent în vizibil) */}
+      {/* slideUp = animație de glisare de jos în sus */}
+      {/* @media = stiluri care se aplică doar pe ecrane mici (telefoane) */}
       <style jsx>{`
         @keyframes fadeIn {
           from { opacity: 0; }
@@ -49,6 +79,12 @@ export default function AboutModal({ isOpen, onClose }: AboutModalProps) {
           }
         }
       `}</style>
+
+      {/* Cutia principală a modalului (cardul alb/negru) */}
+      {/* e.stopPropagation() = oprește click-ul să ajungă la overlay (să nu se închidă) */}
+      {/* maxWidth: 800px = lățimea maximă a cutiei */}
+      {/* maxHeight: 90vh = înălțimea maximă = 90% din înălțimea ecranului */}
+      {/* overflow: auto = dacă conținutul e prea mare, apare bară de scroll */}
       <div
         style={{
           backgroundColor: '#0a0a0a',
@@ -64,7 +100,9 @@ export default function AboutModal({ isOpen, onClose }: AboutModalProps) {
         }}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header */}
+        {/* Header-ul modalului (partea de sus cu titlu și butonul X) */}
+        {/* position: sticky = rămâne lipit sus când faci scroll în modal */}
+        {/* background: linear-gradient = fundal cu gradient (trecere între culori) */}
         <div style={{
           position: 'sticky',
           top: 0,
@@ -80,6 +118,8 @@ export default function AboutModal({ isOpen, onClose }: AboutModalProps) {
           zIndex: 10
         }}>
           <div>
+            {/* Titlul modalului */}
+            {/* fontFamily: Playfair Display = font elegant cu serife */}
             <h2 style={{
               fontSize: '1.8rem',
               fontWeight: 300,
@@ -88,6 +128,7 @@ export default function AboutModal({ isOpen, onClose }: AboutModalProps) {
             }}>
               Despre Mine
             </h2>
+            {/* Linia decorativă aurie sub titlu */}
             <div style={{
               width: '40px',
               height: '2px',
@@ -95,6 +136,10 @@ export default function AboutModal({ isOpen, onClose }: AboutModalProps) {
               marginTop: '0.5rem'
             }}></div>
           </div>
+
+          {/* Butonul de închidere (X) */}
+          {/* borderRadius: 50% = face butonul rotund */}
+          {/* onMouseEnter/onMouseLeave = schimbă stilul când mouse-ul trece peste buton */}
           <button
             onClick={onClose}
             style={{
@@ -122,25 +167,35 @@ export default function AboutModal({ isOpen, onClose }: AboutModalProps) {
               e.currentTarget.style.color = 'rgba(255,255,255,0.6)'
             }}
           >
+            {/* Iconița X de la Font Awesome */}
             <i className="fas fa-times"></i>
           </button>
         </div>
 
-        {/* Content */}
+        {/* Conținutul principal al modalului */}
         <div style={{ padding: '2rem' }}>
+          {/* Grid cu 2 coloane: poza (1 parte) și textul (2 părți) */}
+          {/* display: grid = layout în grilă (rânduri și coloane) */}
+          {/* gridTemplateColumns: '1fr 2fr' = prima coloană ocupă 1/3, a doua 2/3 */}
           <div className="about-grid" style={{
             display: 'grid',
             gridTemplateColumns: '1fr 2fr',
             gap: '2rem',
             alignItems: 'start'
           }}>
-            {/* Poza */}
+            {/* Secțiunea cu fotografia fotografului */}
+            {/* overflow: hidden = taie imaginea care iese din chenarul rotunjit */}
             <div className="about-image-wrap" style={{
               position: 'relative',
               borderRadius: '15px',
               overflow: 'hidden',
               border: '1px solid rgba(255,255,255,0.06)'
             }}>
+              {/* Componenta Image din Next.js - optimizează automat imaginea */}
+              {/* width/height = dimensiunile imaginii */}
+              {/* priority = încarcă imaginea imediat (nu lazy) */}
+              {/* filter: grayscale = face poza alb-negru (60%) */}
+              {/* La hover (mouse peste) = poza devine color */}
               <Image
                 src="/assets/images/despre-mine.jpg"
                 alt="Banciu Costin - Fotograf"
@@ -159,8 +214,9 @@ export default function AboutModal({ isOpen, onClose }: AboutModalProps) {
               />
             </div>
 
-            {/* Detalii */}
+            {/* Secțiunea cu detaliile (text) despre fotograf */}
             <div style={{ color: 'rgba(255,255,255,0.7)' }}>
+              {/* Numele fotografului */}
               <h3 style={{
                 fontSize: '1.5rem',
                 fontWeight: 300,
@@ -171,6 +227,9 @@ export default function AboutModal({ isOpen, onClose }: AboutModalProps) {
                 Banciu Costin
               </h3>
 
+              {/* Subtitlul - "Fotograf Profesionist" în auriu */}
+              {/* textTransform: uppercase = transformă textul în LITERE MARI */}
+              {/* letterSpacing = spațiu între litere */}
               <p style={{
                 fontSize: '0.85rem',
                 fontWeight: 400,
@@ -182,6 +241,8 @@ export default function AboutModal({ isOpen, onClose }: AboutModalProps) {
                 Fotograf Profesionist
               </p>
 
+              {/* Paragrafele cu descrierea fotografului */}
+              {/* lineHeight: 1.8 = spațiul între rânduri (1.8x dimensiunea fontului) */}
               <div style={{ lineHeight: '1.8', fontSize: '0.95rem' }}>
                 <p style={{ marginBottom: '1.25rem' }}>
                   Bună! Sunt Costin și sunt pasionat de fotografie de peste <strong style={{ color: '#fbbf24' }}>10 ani</strong>.
@@ -199,7 +260,7 @@ export default function AboutModal({ isOpen, onClose }: AboutModalProps) {
                   sute de alte evenimente speciale, fiecare cu propria sa magie și unicitate.
                 </p>
 
-                {/* Contact box */}
+                {/* Cutia de contact - cu fundal ușor auriu */}
                 <div style={{
                   background: 'rgba(251,191,36,0.05)',
                   border: '1px solid rgba(251,191,36,0.1)',
@@ -217,7 +278,10 @@ export default function AboutModal({ isOpen, onClose }: AboutModalProps) {
                     Să vorbim despre proiectul tău:
                   </h4>
 
+                  {/* Lista de linkuri de contact */}
+                  {/* display: flex, flexDirection: column = aranjate vertical (unul sub altul) */}
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+                    {/* Link email - href="mailto:" deschide aplicația de email */}
                     <a href="mailto:costinfoto@gmail.com" style={{
                       display: 'flex', alignItems: 'center', gap: '0.75rem',
                       color: 'rgba(255,255,255,0.5)', textDecoration: 'none',
@@ -230,6 +294,7 @@ export default function AboutModal({ isOpen, onClose }: AboutModalProps) {
                       costinfoto@gmail.com
                     </a>
 
+                    {/* Link telefon - href="tel:" deschide aplicația de apeluri */}
                     <a href="tel:+40753110407" style={{
                       display: 'flex', alignItems: 'center', gap: '0.75rem',
                       color: 'rgba(255,255,255,0.5)', textDecoration: 'none',
@@ -242,6 +307,9 @@ export default function AboutModal({ isOpen, onClose }: AboutModalProps) {
                       +40 753 110 407
                     </a>
 
+                    {/* Link WhatsApp - deschide conversație WhatsApp */}
+                    {/* target="_blank" = deschide în tab nou */}
+                    {/* rel="noopener noreferrer" = securitate - previne accesul la pagina originală */}
                     <a
                       href="https://wa.me/40753110407"
                       target="_blank"
