@@ -1329,6 +1329,9 @@ export default function Home() {
           <div className="ft-copy">
             <p>&copy; {new Date().getFullYear()} Banciu Costin Photography</p>
             <p className="ft-copy-sub">Toate drepturile rezervate</p>
+            <p className="ft-copy-sub" style={{ marginTop: '8px', fontSize: '0.75rem' }}>
+              Site creat de <a href="https://www.claudiucomsa.com" target="_blank" rel="noopener noreferrer" style={{ color: '#fbbf24', textDecoration: 'none', transition: 'opacity 0.3s ease' }}>Claudiu Comșa</a>
+            </p>
           </div>
         </div>
       </footer>
